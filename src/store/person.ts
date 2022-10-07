@@ -1,0 +1,235 @@
+import compare from "just-compare";
+import clone from "just-clone";
+
+import { nanoid } from "nanoid/non-secure";
+
+import { families, notifications, people } from "./store";
+import type { Family } from "../types/family";
+
+interface EditableFields {
+  firstName?: string;
+  additionalName?: string;
+  lastName?: string;
+  familyName?: string;
+  dateOfBirth?: { custom: boolean; date: string };
+  dateOfDeath?: { custom: boolean; date: string };
+
+  // TODO: edit marriage
+  // marriedWith?: string;
+  // marriageHash?: string;
+
+  // TODO: edit childOf
+  // childOf?: string;
+
+  // TODO: edit place
+  // DOMElement?: HTMLElement;
+}
+
+export class Person {
+  private _hash: string;
+
+  private _firstName: string;
+  private _lastName: string;
+
+  private _additionalName?: string;
+  private _familyName?: string;
+
+  private _dateOfBirth?: { custom: boolean; date: string };
+  private _dateOfDeath?: { custom: boolean; date: string };
+
+  private _marriedWith?: Person; // TODO: maybe make an array to allow multiple marriages?
+  private _marriageHash?: string;
+
+  /** Limits the marriage to happen only once */
+  private married: boolean = false;
+
+  private _childOf?: string;
+
+  // Make this private, accessible by methods
+  // public _arrows?: { from: Array<any>; to: Array<any> } = {
+  //   from: new Array<any>(),
+  //   to: new Array<any>(),
+  // };
+
+  public get hash(): string {
+    return this._hash;
+  }
+  public get firstName() {
+    return this._firstName;
+  }
+  public get lastName() {
+    return this._lastName;
+  }
+  public get additionalName() {
+    return this._additionalName;
+  }
+  public get familyName() {
+    return this._familyName;
+  }
+  public get dateOfBirth() {
+    return this._dateOfBirth;
+  }
+  public get dateOfDeath() {
+    return this._dateOfDeath;
+  }
+  public get marriedWith() {
+    return this._marriedWith;
+  }
+  public get marriageHash() {
+    return this._marriageHash;
+  }
+  public get childOf() {
+    return this._childOf;
+  }
+  // public get arrows() {
+  //   return this._arrows;
+  // }
+
+  private set marriedWith(person: Person) {
+    this._marriedWith = person;
+  }
+  private set marriageHash(hash: string) {
+    this._marriageHash = hash;
+  }
+
+  private constructor(d: globalThis.PersonForm) {
+    this._hash = nanoid(12);
+
+    this._firstName = d.firstName;
+    this._lastName = d.lastName;
+    this._additionalName = d.additionalName ?? null;
+    this._familyName = d.familyName ?? null;
+    this._dateOfBirth = d.dateOfBirth ?? clone(d.dateOfBirth);
+    this._dateOfDeath = d.dateOfDeath ?? clone(d.dateOfDeath);
+  }
+
+  public static async create(data: globalThis.PersonForm) {
+    let person = new Person(data);
+
+    debugger;
+
+    if (people.has({ person })) {
+      throw new Error(`${person.getFullNameAbbr()} already exists.`);
+    }
+
+    // Handle marriage
+    if (data.marriedWith != null) {
+      let spouse: Person;
+      people.subscribe((people) => (spouse = people.get(data.marriedWith)))();
+
+      if (spouse == null) {
+        throw new Error(
+          `Spouse provided with ${person.getFullNameAbbr()} does not exist!`
+        );
+      }
+
+      try {
+        person.marry(spouse);
+      } catch (e) {
+        throw e;
+      }
+    }
+
+    // Handle parents
+    if (data.childOf != null) {
+      // console.log(data.childOf);
+
+      let parentFamily: Family;
+      let unsubscribe = families.subscribe(
+        (families) => (parentFamily = families.get(data.childOf))
+      );
+
+      if (parentFamily == null) {
+        throw new Error(
+          `Family provided with ${person.getFullNameAbbr()} does not exist!`
+        );
+      }
+
+      person._childOf = data.childOf;
+
+      try {
+        families.addChild(person);
+      } catch (e) {
+        throw e;
+      }
+
+      unsubscribe();
+    }
+
+    return person;
+  }
+
+  /** Updates the hash in all possible places */
+  // private async updateHash() {
+  //   const oldHash = this.hash;
+  //   let concatenatedFields =
+  //     "" +
+  //     this.firstName +
+  //     s(this.additionalName) +
+  //     this.lastName +
+  //     s(this.familyName) +
+  //     d(this.dateOfBirth) +
+  //     d(this.dateOfDeath);
+  //   const newHash = await stringToSHA1(concatenatedFields);
+  //   if (oldHash !== newHash) {
+  //     this._hash = newHash;
+  //     notifications.sendTrace(
+  //       `${this.getFullNameAbbr()}'s hashes got updated.`
+  //     );
+  //   } else {
+  //     notifications.sendTrace(`${this.getFullNameAbbr()}'s are up to date.`);
+  //   }
+  // }
+
+  public getFullNameAbbr() {
+    return `${this.firstName.at(0)}. ${
+      this.additionalName != null ? `${this.additionalName.at(0)}. ` : ""
+    }${this.lastName}${this.familyName != null ? ` - ${this.familyName}` : ""}`;
+  }
+
+  /** TODO: make editing a person possible everywhere */
+  private async editPerson(edits: EditableFields) {
+    const previous = { ...this };
+
+    Object.assign(this, edits);
+
+    if (!compare(previous, this)) {
+      notifications.sendTrace(`${this.getFullNameAbbr()}'s data got updated.`);
+    }
+  }
+
+  public marry(person: Person) {
+    if (this.marriedWith != null) {
+      throw new Error(`${this.getFullNameAbbr()} is already married!`);
+    }
+
+    if (person.marriedWith != null) {
+      throw new Error(`${person.getFullNameAbbr()} is already married!`);
+    }
+
+    this.marriedWith = person;
+    person.marriedWith = this;
+
+    let spouse = this.marriedWith;
+
+    if (this.marriageHash == null) {
+      const marriageHash = nanoid(12);
+
+      this.marriageHash = marriageHash;
+      spouse.marriageHash = marriageHash;
+
+      this.married = true;
+      spouse.married = true;
+
+      try {
+        families.add(this, spouse);
+      } catch (e) {
+        throw e;
+      }
+    }
+  }
+}
+
+const s = (s: string | null | undefined) => (s != null ? s : "");
+const d = (d: { custom: boolean; date: string } | null | undefined) =>
+  d != null ? d.date : "";

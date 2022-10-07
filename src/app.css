@@ -1,0 +1,161 @@
+@import url("https://rsms.me/inter/inter.css");
+
+:root {
+  font-family: "Inter var", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+
+  color-scheme: dark light;
+  color: hsl(var(--text-color));
+  background-color: hsl(var(--body-background));
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --text-color: 208, 37%, 15%;
+  --text-color-inverted: 0, 0%, 98%;
+  --body-background: 0, 0%, 100%;
+  --card-background: 0, 0%, 95%;
+
+  --border-color: 0, 0%, 70%;
+  --button-background: 0, 0%, 98%;
+  --theme-color: 237, 100%, 70%;
+
+  --shadow-color: 0deg 0% 70%;
+
+  --shadow-elevation-low: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.46),
+    0.5px 0.5px 0.6px -2.1px hsl(var(--shadow-color) / 0.34),
+    1.2px 1.2px 1.5px -4.2px hsl(var(--shadow-color) / 0.21);
+
+  --shadow-elevation-medium: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.49),
+    0.7px 0.7px 0.9px -1.4px hsl(var(--shadow-color) / 0.39),
+    2.1px 2.2px 2.6px -2.8px hsl(var(--shadow-color) / 0.29),
+    6px 6px 7.3px -4.2px hsl(var(--shadow-color) / 0.19);
+
+  --shadow-elevation-high: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.45),
+    0.8px 0.8px 1px -0.6px hsl(var(--shadow-color) / 0.41),
+    1.5px 1.6px 1.9px -1.2px hsl(var(--shadow-color) / 0.36),
+    3.1px 3.1px 3.8px -1.8px hsl(var(--shadow-color) / 0.31),
+    6px 6px 7.3px -2.4px hsl(var(--shadow-color) / 0.27),
+    10.5px 10.5px 12.8px -3px hsl(var(--shadow-color) / 0.22),
+    17.2px 17.3px 21px -3.6px hsl(var(--shadow-color) / 0.17),
+    26.6px 26.7px 32.5px -4.2px hsl(var(--shadow-color) / 0.13);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: 0, 0%, 98%;
+    --text-color-inverted: 208, 37%, 20%;
+    --body-background: 0, 0%, 15%;
+    --card-background: 0, 0%, 25%;
+
+    --border-color: 0, 0%, 20%;
+    --button-background: 0, 0%, 98%;
+    --theme-color: 237, 100%, 70%;
+
+    --shadow-color: 0deg 0% 40%;
+
+    --shadow-elevation-low: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.46),
+      0.5px 0.5px 0.6px -2.1px hsl(var(--shadow-color) / 0.34),
+      1.2px 1.2px 1.5px -4.2px hsl(var(--shadow-color) / 0.21);
+
+    --shadow-elevation-medium: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.49),
+      0.7px 0.7px 0.9px -1.4px hsl(var(--shadow-color) / 0.39),
+      2.1px 2.2px 2.6px -2.8px hsl(var(--shadow-color) / 0.29),
+      6px 6px 7.3px -4.2px hsl(var(--shadow-color) / 0.19);
+
+    --shadow-elevation-high: 0.3px 0.3px 0.4px hsl(var(--shadow-color) / 0.45),
+      0.8px 0.8px 1px -0.6px hsl(var(--shadow-color) / 0.41),
+      1.5px 1.6px 1.9px -1.2px hsl(var(--shadow-color) / 0.36),
+      3.1px 3.1px 3.8px -1.8px hsl(var(--shadow-color) / 0.31),
+      6px 6px 7.3px -2.4px hsl(var(--shadow-color) / 0.27),
+      10.5px 10.5px 12.8px -3px hsl(var(--shadow-color) / 0.22),
+      17.2px 17.3px 21px -3.6px hsl(var(--shadow-color) / 0.17),
+      26.6px 26.7px 32.5px -4.2px hsl(var(--shadow-color) / 0.13);
+  }
+}
+
+#app {
+  width: 100%;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #747bff;
+}
+
+body {
+  margin: 0;
+  /* padding: 1rem 2rem; */
+  display: flex;
+  min-width: 320px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+
+  width: 100%;
+}
+
+h1:first-of-type {
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+.card {
+  padding: 2em;
+}
+
+button {
+  border: 3px solid hsla(var(--border-color));
+
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: hsl(var(--card-background));
+
+  transition: all ease-in-out 0.1s;
+}
+button:hover {
+  border-color: hsl(var(--theme-color));
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* arrows-svg */
+.arrow {
+  pointer-events: none;
+}
+
+.arrow__path {
+  stroke: hsl(var(--border-color));
+  fill: transparent;
+  stroke-width: 2px;
+  stroke-linecap: round;
+  /* stroke-dasharray: 4 2; */
+}
+
+.arrow__head line {
+  stroke: hsl(var(--border-color));
+  /* stroke: hsl(0, 0%, 20%); */
+  stroke-width: 2px;
+}
+
+@media print {
+  h1 {
+    display: none;
+  }
+}
