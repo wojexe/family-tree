@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount, tick } from "svelte";
+  import { afterUpdate, tick } from "svelte";
   import LeaderLine, { type Options } from "leader-line-new";
 
   import type { Family, Marriage } from "../types/family";
-  import { arrowsContainer } from "../store/store";
+  import { arrowsContainer, people } from "../store/store";
 
   import Person from "./Person.svelte";
 
@@ -15,7 +15,9 @@
   $: marriage = family?.marriage;
   $: between = marriage?.between;
 
-  $: [p0, p1] = between == null ? [null, null] : between;
+  $: [p0Hash, p1Hash] = between == null ? [null, null] : between;
+  $: p0 = $people.get(p0Hash);
+  $: p1 = $people.get(p1Hash);
 
   const arrowOptions: Options = {
     color: "hsl(var(--border-color))",
@@ -25,11 +27,15 @@
 
   let connectionElement: HTMLElement;
 
-  onMount(async () => {
+  afterUpdate(async () => {
     await tick();
+
+    if (connectionElement != null) connectionElement.remove();
 
     const left = document.getElementById(p0.hash);
     const right = document.getElementById(p1.hash);
+
+    if (left == null || right == null) return;
 
     // TODO: Save this somewhere?
     const connection = new LeaderLine(left, right, arrowOptions);
@@ -45,10 +51,10 @@
   });
 </script>
 
-{#if family != null}
+{#if family != null && p0 != null && p1 != null}
   <div id={hash} class="marriage">
-    <Person id={p0.hash} class="left" person={p0} />
-    <Person id={p1.hash} class="right" person={p1} />
+    <Person id={p0Hash} class="left" person={p0} />
+    <Person id={p1Hash} class="right" person={p1} />
   </div>
 {/if}
 

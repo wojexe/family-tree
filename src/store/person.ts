@@ -6,7 +6,7 @@ import { nanoid } from "nanoid/non-secure";
 import { families, notifications, people } from "./store";
 import type { Family } from "../types/family";
 
-interface EditableFields {
+export interface EditableFields {
   firstName?: string;
   additionalName?: string;
   lastName?: string;
@@ -20,9 +20,6 @@ interface EditableFields {
 
   // TODO: edit childOf
   // childOf?: string;
-
-  // TODO: edit place
-  // DOMElement?: HTMLElement;
 }
 
 export class Person {
@@ -41,7 +38,13 @@ export class Person {
   private _marriageHash?: string;
 
   /** Limits the marriage to happen only once */
-  private married: boolean = false;
+  private _married: boolean = false;
+  public get married(): boolean {
+    return this._married;
+  }
+  public set married(value: boolean) {
+    this._married = value;
+  }
 
   private _childOf?: string;
 
@@ -57,20 +60,38 @@ export class Person {
   public get firstName() {
     return this._firstName;
   }
+  public set firstName(value: string) {
+    this._firstName = value;
+  }
   public get lastName() {
     return this._lastName;
+  }
+  public set lastName(value: string) {
+    this._lastName = value;
   }
   public get additionalName() {
     return this._additionalName;
   }
+  public set additionalName(value: string) {
+    this._additionalName = value;
+  }
   public get familyName() {
     return this._familyName;
+  }
+  public set familyName(value: string) {
+    this._familyName = value;
   }
   public get dateOfBirth() {
     return this._dateOfBirth;
   }
+  public set dateOfBirth(value: { custom: boolean; date: string }) {
+    this._dateOfBirth = clone(value);
+  }
   public get dateOfDeath() {
     return this._dateOfDeath;
+  }
+  public set dateOfDeath(value: { custom: boolean; date: string }) {
+    this._dateOfDeath = clone(value);
   }
   public get marriedWith() {
     return this._marriedWith;
@@ -81,10 +102,9 @@ export class Person {
   public get childOf() {
     return this._childOf;
   }
-  // public get arrows() {
-  //   return this._arrows;
-  // }
-
+  public set childOf(childOf: string) {
+    this._childOf = childOf;
+  }
   private set marriedWith(person: Person) {
     this._marriedWith = person;
   }
@@ -103,14 +123,14 @@ export class Person {
     this._dateOfDeath = d.dateOfDeath ?? clone(d.dateOfDeath);
   }
 
-  public static async create(data: globalThis.PersonForm) {
+  public static async *create(data: globalThis.PersonForm) {
     let person = new Person(data);
-
-    debugger;
 
     if (people.has({ person })) {
       throw new Error(`${person.getFullNameAbbr()} already exists.`);
     }
+
+    yield person.hash;
 
     // Handle marriage
     if (data.marriedWith != null) {
@@ -159,43 +179,40 @@ export class Person {
     return person;
   }
 
-  /** Updates the hash in all possible places */
-  // private async updateHash() {
-  //   const oldHash = this.hash;
-  //   let concatenatedFields =
-  //     "" +
-  //     this.firstName +
-  //     s(this.additionalName) +
-  //     this.lastName +
-  //     s(this.familyName) +
-  //     d(this.dateOfBirth) +
-  //     d(this.dateOfDeath);
-  //   const newHash = await stringToSHA1(concatenatedFields);
-  //   if (oldHash !== newHash) {
-  //     this._hash = newHash;
-  //     notifications.sendTrace(
-  //       `${this.getFullNameAbbr()}'s hashes got updated.`
-  //     );
-  //   } else {
-  //     notifications.sendTrace(`${this.getFullNameAbbr()}'s are up to date.`);
-  //   }
-  // }
-
   public getFullNameAbbr() {
     return `${this.firstName.at(0)}. ${
       this.additionalName != null ? `${this.additionalName.at(0)}. ` : ""
     }${this.lastName}${this.familyName != null ? ` - ${this.familyName}` : ""}`;
   }
 
+  public getFullName() {
+    return `${this.firstName} ${
+      this.additionalName != null ? `${this.additionalName} ` : ""
+    }${this.lastName}${this.familyName != null ? ` - ${this.familyName}` : ""}`;
+  }
+
   /** TODO: make editing a person possible everywhere */
-  private async editPerson(edits: EditableFields) {
+  public edit(edits: EditableFields) {
     const previous = { ...this };
 
     Object.assign(this, edits);
 
     if (!compare(previous, this)) {
+      people.regen(this);
       notifications.sendTrace(`${this.getFullNameAbbr()}'s data got updated.`);
     }
+  }
+
+  public remove() {
+    if (this.marriedWith != null) {
+      families.removeFamily(this.marriageHash);
+    }
+
+    if (this.childOf != null) {
+      families.removeChild(this.childOf, this);
+    }
+
+    people.remove(this);
   }
 
   public marry(person: Person) {
@@ -227,6 +244,26 @@ export class Person {
         throw e;
       }
     }
+  }
+
+  /** You rather don't use this */
+  public divorce() {
+    if (this.marriedWith == null) {
+      throw new Error(`${this.getFullNameAbbr()} not already married!`);
+    }
+
+    let spouse = this.marriedWith;
+
+    if (spouse.marriedWith == null) {
+      throw new Error(`${spouse.getFullNameAbbr()} not already married!`);
+    }
+
+    this.marriedWith = null;
+    spouse.marriedWith = null;
+    this.marriageHash = null;
+    spouse.marriageHash = null;
+    this.married = false;
+    spouse.married = false;
   }
 }
 

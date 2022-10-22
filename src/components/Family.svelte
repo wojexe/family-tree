@@ -15,8 +15,6 @@
   $: if (person?.marriedWith != null) {
     family = $families.get(person.marriageHash);
   }
-
-  // TODO: for every child render arrow
 </script>
 
 {#if family != null}

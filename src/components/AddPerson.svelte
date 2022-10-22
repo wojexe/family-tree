@@ -5,7 +5,8 @@
 
   const notMarried = derived(people, (people) =>
     Array.from(people)
-      .filter(([_, person]) => person.marriedWith == null)
+      .filter(([_, person]) => person != null)
+      .filter(([_, person]) => person?.marriedWith == null)
       .sort(([_a, a], [_b, b]) => {
         let lastNameCompare = a.lastName.localeCompare(b.lastName);
 
@@ -51,14 +52,14 @@
       )
     );
 
-    await people.add(formDataCopied);
-
     formData = {
       firstName: "",
       lastName: "",
       dateOfBirth: { custom: false, date: "" },
       dateOfDeath: { custom: false, date: "" },
     };
+
+    await people.add(formDataCopied);
   };
 
   $: console.log($people);
@@ -66,7 +67,7 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-  <h2 id="qwe">Add new person</h2>
+  <h2>Add new person</h2>
 
   <div class="grid">
     <label>
@@ -136,7 +137,10 @@
     </label>
     <label>
       <span>Married with</span>
-      <select bind:value={formData.marriedWith} disabled={$people.size === 0}>
+      <select
+        bind:value={formData.marriedWith}
+        disabled={$people.size === 0 || formData.childOf != null}
+      >
         <option value={undefined} />
         <!-- TODO: What if second marriage? -->
         {#each $notMarried as [hash, person]}
@@ -145,20 +149,24 @@
       </select>
     </label>
   </div>
-
   <label class="childOf">
     <span>Child of</span>
-    <select bind:value={formData.childOf} disabled={$families.length === 0}>
+    <select
+      bind:value={formData.childOf}
+      disabled={$families.length === 0 || formData.marriedWith != null}
+    >
       <option value={undefined} />
       {#each $families as { hash, marriage: { between: [p0, p1] } }}
         <option value={hash}>
-          {`${p0.getFullNameAbbr()} & ${p1.getFullNameAbbr()}`}
+          {`${$people.get(p0)?.getFullNameAbbr()} & ${$people
+            .get(p1)
+            ?.getFullNameAbbr()}`}
         </option>
       {/each}
     </select>
   </label>
 
-  <button id="asd" type="submit">Add</button>
+  <button type="submit">Add</button>
 </form>
 
 <style lang="scss">
@@ -171,9 +179,6 @@
   }
 
   form {
-    /* position: absolute;
-    bottom: 0; */
-
     display: flex;
     flex-direction: column;
     gap: 1rem;

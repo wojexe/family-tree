@@ -75,4 +75,10 @@
 
     z-index: 100;
   }
+
+  @media print {
+    .notification-box {
+      display: none;
+    }
+  }
 </style>

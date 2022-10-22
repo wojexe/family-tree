@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    resetStore,
-    importTree,
-    exportTree,
-    exportTreePDF,
-  } from "../store/store";
+  import { resetStore, importTree, exportTree } from "../store/store";
 </script>
 
 <div
@@ -13,7 +8,6 @@
   <button on:click={() => resetStore()}>Clear tree</button>
   <button on:click={() => importTree()}>Import tree</button>
   <button on:click={() => exportTree()}>Export tree</button>
-  <button on:click={() => exportTreePDF()}>Export to PDF</button>
 </div>
 
 <style>

@@ -16,6 +16,7 @@ specifiers:
   svelte: ^3.49.0
   svelte-check: ^2.8.1
   svelte-preprocess: ^4.10.7
+  svelte-simple-modal: ^1.4.1
   tslib: ^2.4.0
   typescript: ^4.6.4
   vite: ^3.1.0
@@ -29,6 +30,7 @@ dependencies:
   leader-line-new: 1.1.9
   nanoid: 4.0.0
   normalize.css: 8.0.1
+  svelte-simple-modal: 1.4.1_svelte@3.50.1
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 1.0.5_svelte@3.50.1+vite@3.1.1
@@ -1072,6 +1074,14 @@ packages:
       svelte: 3.50.1
       typescript: 4.8.3
     dev: true
+
+  /svelte-simple-modal/1.4.1_svelte@3.50.1:
+    resolution: {integrity: sha512-em/uxH1xvQZoXTOq81Kk0u9ltjf/EyQkNiKTQJQmdCygDMqyUfMCFzLnbIQ4ApfV4BcRh6eYbwbCeeWTOyfpsg==}
+    peerDependencies:
+      svelte: ^3.31.2
+    dependencies:
+      svelte: 3.50.1
+    dev: false
 
   /svelte/3.50.1:
     resolution: {integrity: sha512-bS4odcsdj5D5jEg6riZuMg5NKelzPtmsCbD9RG+8umU03TeNkdWnP6pqbCm0s8UQNBkqk29w/Bdubn3C+HWSwA==}

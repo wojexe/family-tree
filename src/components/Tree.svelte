@@ -1,6 +1,9 @@
 <script lang="ts">
   // FIXME: Arrows get bugged, when changing the zoom level.
 
+  import { modal } from "../store/store";
+  import { Modal } from "svelte-simple-modal";
+
   import Family from "./Family.svelte";
   import {
     families,
@@ -21,6 +24,7 @@
       ?.getBoundingClientRect();
 
     if (marriageElementRect == null) {
+      // This error will always occur when the first family is created
       throw new Error("Marriage element not found.");
     }
 
@@ -33,11 +37,15 @@
   };
 
   $: if (firstFamily != null && firstFamily.hash != null) {
-    try {
-      scrollToMiddle();
-    } catch (e) {
-      notifications.sendError(e);
-    }
+    const execute = async () => {
+      try {
+        await scrollToMiddle();
+      } catch (e) {
+        notifications.sendError(e);
+      }
+    };
+
+    execute();
   }
 
   let arrows: HTMLDivElement;
@@ -68,16 +76,8 @@
 
   const adjustArrows = () => {
     arrows.style.transform = `translate(
-      ${
-        -getContentLeft(wrapper) -
-        scrollX -
-        wrapper.scrollLeft / wrapper.scrollWidth
-      }px,
-      ${
-        -getContentBottom(wrapper) -
-        scrollY -
-        wrapper.scrollTop / wrapper.scrollHeight
-      }px)`;
+      ${-getContentLeft(wrapper) - scrollX}px,
+      ${-getContentBottom(wrapper) - scrollY}px)`;
   };
 
   onMount(() => {
@@ -107,7 +107,18 @@
   style={firstFamily != null ? "" : "display: none"}
 >
   <div bind:this={wrapper} class="wrapper" on:scroll={adjustArrows}>
-    <Family family={firstFamily} />
+    <Modal
+      show={$modal}
+      classWindow="modal"
+      styleWindow={{
+        backgroundColor: "hsl(var(--card-background))",
+        borderRadius: "32px",
+        width: "max-content",
+        padding: 0,
+      }}
+    >
+      <Family family={firstFamily} />
+    </Modal>
     <div bind:this={arrows} id="arrows" />
   </div>
 </div>
@@ -140,7 +151,38 @@
     border-radius: 3rem;
   }
 
+  /* @media only print { */
   @media print {
+    :global(html) {
+      margin: 0;
+      padding: 0;
+    }
+
+    :global(body) {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #tree {
+      /* width: 100%; */
+      margin: 0;
+      overflow: visible;
+
+      .wrapper {
+        /* width: 100%; */
+        padding: 0;
+        margin: 0;
+        border: none;
+
+        overflow: visible;
+
+        /* outline: 3px solid red; */
+      }
+    }
+  }
+
+  /* @media print {
     :global(body),
     #tree,
     .wrapper {
@@ -151,8 +193,5 @@
       overflow: visible !important;
       margin-left: 0 !important;
     }
-    /* :global(.leader-line) {
-      transform: translateX(-100px);
-    } */
-  }
+  } */
 </style>

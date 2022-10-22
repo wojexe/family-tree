@@ -3,9 +3,9 @@ import type Person from "../store/person";
 export interface Family {
   hash: string;
   marriage: Marriage;
-  children: Array<Person>;
+  children: Array<string>;
 }
 
 interface Marriage {
-  between: [Person, Person];
+  between: [string, string];
 }

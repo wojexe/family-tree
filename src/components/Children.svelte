@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { onMount, tick } from "svelte";
+  import { afterUpdate, onMount, tick } from "svelte";
   import LeaderLine, { type Options } from "leader-line-new";
 
-  import { arrowsContainer, families, notifications } from "../store/store";
-  import type { Person } from "../store/person";
+  import {
+    arrowsContainer,
+    families,
+    notifications,
+    people,
+  } from "../store/store";
 
   import Family from "./Family.svelte";
 
-  export let children: Array<Person>;
+  export let children: Array<string>;
+  $: childrenPeople = children
+    .map((childHash) => $people.get(childHash))
+    .filter((child) => child != null);
 
-  $: cols = children.length;
+  $: cols = childrenPeople.length;
 
   const arrowOptions: Options = {
     color: "hsl(var(--border-color))",
@@ -23,12 +30,19 @@
     // endSocketGravity: 30,
     // path: "fluid",
   };
-  let connectionElement: HTMLElement;
+  let connectionElements = new Array<Element>();
 
-  onMount(async () => {
+  afterUpdate(async () => {
     await tick();
 
-    children.forEach((child) => {
+    connectionElements.forEach((el) => el.remove());
+    connectionElements = new Array<Element>();
+
+    childrenPeople.forEach((child) => {
+      if (child == null) {
+        return;
+      }
+
       const source = document.getElementById(child.childOf);
       const destination =
         child.marriageHash != null
@@ -36,27 +50,36 @@
           : document.getElementById(child.hash);
 
       if (source == null || destination == null) {
-        notifications.sendError(`Arrow to ${child.getFullNameAbbr()} errored.`);
+        const msg = `Arrow to ${child.getFullNameAbbr()} errored.`;
+
+        notifications.sendError(msg);
+        console.error(msg, source, destination);
+
+        return;
       }
 
       const connection = new LeaderLine(source, destination, arrowOptions);
-      connectionElement = document.querySelector(
+      let connectionElement = document.querySelector(
         "body > svg.leader-line:last-child"
       );
 
       arrowsContainer.update((el) => {
         el.appendChild(connectionElement);
 
+        console.log(connection);
+
         return el;
       });
+
+      connectionElements.push(connectionElement);
+      // notifications.sendTrace(`Added arrow to ${child.getFullNameAbbr()}.`);
     });
   });
 </script>
 
-{#if children.length !== 0}
+{#if childrenPeople.length !== 0}
   <div class="children" style="--cols: {cols}">
-    {#each children as child}
-      {@debug child}
+    {#each childrenPeople as child}
       {#if child.marriedWith == null}
         <Family person={child} />
       {:else}

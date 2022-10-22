@@ -1,14 +1,13 @@
 import { writable } from "svelte/store";
 import { persistBrowserLocal } from "@macfja/svelte-persistent-store";
 
-import html2pdf from "html2pdf.js";
-
 import { createPeople } from "./people";
 import { createFamilies } from "./families";
 import { createNotifications } from "./notifications";
 
 export const people = createPeople();
 export const families = createFamilies();
+export const notifications = createNotifications();
 
 export const firstFamilyHash = persistBrowserLocal(
   writable<string>(),
@@ -18,7 +17,7 @@ export const firstFamilyHash = persistBrowserLocal(
 export const treeContainer = writable<HTMLDivElement>(null);
 export const arrowsContainer = writable<HTMLDivElement>(null);
 
-export const notifications = createNotifications();
+export const modal = writable(null);
 
 export const resetStore = () => {
   people.clear();
@@ -68,32 +67,32 @@ export const exportTree = () => {
   navigator.clipboard.writeText(JSON.stringify(localStorage));
 };
 
-export const exportTreePDF = () => {
-  notifications.sendTrace("Exporting tree to PDF.");
+// export const exportTreePDF = () => {
+//   notifications.sendTrace("Exporting tree to PDF.");
 
-  let FFH: string;
-  let unsubFFH = firstFamilyHash.subscribe((hash) => (FFH = hash));
+//   let FFH: string;
+//   let unsubFFH = firstFamilyHash.subscribe((hash) => (FFH = hash));
 
-  let tree: HTMLDivElement;
-  let unsub = treeContainer.subscribe((el) => (tree = el));
+//   let tree: HTMLDivElement;
+//   let unsub = treeContainer.subscribe((el) => (tree = el));
 
-  if (FFH == null || tree == null) {
-    notifications.sendError("There is no tree to export yet!");
+//   if (FFH == null || tree == null) {
+//     notifications.sendError("There is no tree to export yet!");
 
-    return;
-  }
+//     return;
+//   }
 
-  notifications.sendTrace("Creating PDF.");
+//   notifications.sendTrace("Creating PDF.");
 
-  let worker = html2pdf();
+//   let worker = html2pdf();
 
-  worker
-    .set({ margin: 16, jsPDF: { format: "a3" } })
-    .from(tree)
-    .save();
+//   worker
+//     .set({ margin: 16, jsPDF: { format: "a3" } })
+//     .from(tree)
+//     .save();
 
-  unsub();
-  unsubFFH();
+//   unsub();
+//   unsubFFH();
 
-  notifications.sendInfo("Tree successfully exported to PDF!");
-};
+//   notifications.sendInfo("Tree successfully exported to PDF!");
+// };

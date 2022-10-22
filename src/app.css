@@ -80,6 +80,7 @@
 
 #app {
   width: 100%;
+  position: relative;
 }
 
 a {
@@ -157,5 +158,9 @@ button:focus-visible {
 @media print {
   h1 {
     display: none;
+  }
+
+  #app {
+    width: 100%
   }
 }

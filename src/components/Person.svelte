@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { Person } from "../store/person";
+  import type { EditableFields, Person } from "../store/person";
+
+  import { families, modal, people } from "../store/store";
+  import { bind } from "svelte-simple-modal";
+  import Popup from "./Popup.svelte";
 
   export let person: Person;
   export let id: string = null;
@@ -9,10 +13,27 @@
 
     return Intl.DateTimeFormat("pl").format(new Date(date));
   };
+
+  const onSubmit = async (edits: EditableFields) => {
+    console.log($people);
+
+    person.edit(edits);
+    person = person; // Trigger reactivity
+
+    people.update();
+    families.update();
+
+    console.log($people);
+  };
+
+  const onDelete = () => person.remove();
+
+  const showModal = () =>
+    modal.set(bind(Popup, { person, onSubmit, onDelete }));
 </script>
 
 {#if person != null}
-  <div {id} class={$$props.class + " person-card"}>
+  <div {id} class={$$props.class + " person-card"} on:click={showModal}>
     <div class="names">
       <span class="full-name"
         >{person.firstName}
@@ -40,6 +61,10 @@
 {/if}
 
 <style lang="scss">
+  :global(.modal) {
+    content: "dfnakad";
+    background: red;
+  }
   .left {
     justify-self: flex-end;
   }
