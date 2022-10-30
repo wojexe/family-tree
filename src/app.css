@@ -156,6 +156,10 @@ button:focus-visible {
 }
 
 @media print {
+  body {
+    zoom: 10%;
+  }
+
   h1 {
     display: none;
   }

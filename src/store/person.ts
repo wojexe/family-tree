@@ -204,12 +204,12 @@ export class Person {
   }
 
   public remove() {
-    if (this.marriedWith != null) {
-      families.removeFamily(this.marriageHash);
-    }
-
     if (this.childOf != null) {
       families.removeChild(this.childOf, this);
+    }
+    
+    if (this.marriedWith != null) {
+      families.removeFamily(this.marriageHash);
     }
 
     people.remove(this);
@@ -246,16 +246,19 @@ export class Person {
     }
   }
 
-  /** You rather don't use this */
+  /** You rather don't use this...
+   * 
+   * Clears `marriedWith`, `marriageHash` and `married` fields from both persons
+   */
   public divorce() {
     if (this.marriedWith == null) {
-      throw new Error(`${this.getFullNameAbbr()} not already married!`);
+      throw new Error(`${this.getFullNameAbbr()} not married!`);
     }
 
     let spouse = this.marriedWith;
 
     if (spouse.marriedWith == null) {
-      throw new Error(`${spouse.getFullNameAbbr()} not already married!`);
+      throw new Error(`${spouse.getFullNameAbbr()} not married!`);
     }
 
     this.marriedWith = null;

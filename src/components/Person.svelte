@@ -33,7 +33,8 @@
 </script>
 
 {#if person != null}
-  <div {id} class={$$props.class + " person-card"} on:click={showModal}>
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <div {id} class={"person-card " + $$props.class ?? ""} on:click={showModal}>
     <div class="names">
       <span class="full-name"
         >{person.firstName}

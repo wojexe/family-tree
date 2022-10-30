@@ -19,6 +19,10 @@
   const scrollToMiddle = async () => {
     await tick();
 
+    adjustArrows();
+
+    return;
+
     const marriageElementRect = document
       .getElementById(firstFamily.hash)
       ?.getBoundingClientRect();
@@ -76,11 +80,11 @@
 
   const adjustArrows = () => {
     arrows.style.transform = `translate(
-      ${-getContentLeft(wrapper) - scrollX}px,
+      ${-getContentLeft(wrapper) + wrapper.scrollLeft}px,
       ${-getContentBottom(wrapper) - scrollY}px)`;
   };
 
-  onMount(() => {
+  onMount(async () => {
     $arrowsContainer = arrows;
     $treeContainer = tree;
 
@@ -106,7 +110,7 @@
   id="tree"
   style={firstFamily != null ? "" : "display: none"}
 >
-  <div bind:this={wrapper} class="wrapper" on:scroll={adjustArrows}>
+  <div bind:this={wrapper} class="wrapper">
     <Modal
       show={$modal}
       classWindow="modal"
