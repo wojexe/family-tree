@@ -32,9 +32,10 @@
   .family {
     /* outline: 1px red dashed; */
 
-    min-width: max-content;
+    min-width: fit-content;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    align-items: center;
+    gap: 7.5rem;
   }
 </style>

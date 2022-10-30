@@ -9,7 +9,7 @@ import { firstFamilyHash, notifications, people } from "./store";
 interface ReadableFamily<T> extends Readable<T> {
   add: (p1: Person, p2: Person) => void;
   addChild: (person: Person) => void;
-  detachChildren: (family: string) => void;
+  removeChildren: (family: string) => void;
   removeChild: (family: string, person: Person) => void;
   removeFamily: (family: string) => void;
   has: (data?: { person?: Person; hash?: string }) => boolean;
@@ -76,18 +76,15 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
     notifications.sendInfo("Child successfully added!");
   };
 
-  const detachChildren = (family: string) => {
+  const removeChildren = (family: string) => {
     families.update((map) => {
       const edited = map.get(family);
 
-      people.subscribe((map) => {
-        edited.children.forEach((child) => {
-          let edited: Person;
-          edited = map.get(child);
-
-          edited.childOf = null;
-        });
-      })();
+      edited?.children?.forEach((child) => {
+        people.subscribe((map) => {
+          map.get(child).remove();
+        })();
+      });
 
       edited.children = new Array<string>();
 
@@ -101,7 +98,7 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
     families.update((map) => {
       let edited = map.get(family);
 
-      edited.children.filter((el) => el != person.hash);
+      edited.children = edited.children.filter((el) => el !== person.hash);
 
       map.set(family, edited);
 
@@ -110,7 +107,7 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
   };
 
   const removeFamily = (family: string) => {
-    detachChildren(family);
+    removeChildren(family);
 
     families.update((map) => {
       let edited = map.get(family);
@@ -159,7 +156,7 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
   return {
     add,
     addChild,
-    detachChildren,
+    removeChildren,
     removeChild,
     removeFamily,
     has,

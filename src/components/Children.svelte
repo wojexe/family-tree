@@ -33,12 +33,12 @@
   let connectionElements = new Array<Element>();
 
   afterUpdate(async () => {
-    await tick();
-
     connectionElements.forEach((el) => el.remove());
     connectionElements = new Array<Element>();
 
-    childrenPeople.forEach((child) => {
+    childrenPeople.forEach(async (child) => {
+      await tick();
+
       if (child == null) {
         return;
       }
@@ -50,7 +50,11 @@
           : document.getElementById(child.hash);
 
       if (source == null || destination == null) {
-        const msg = `Arrow to ${child.getFullNameAbbr()} errored.`;
+        let msg = `Arrow to ${child.getFullNameAbbr()} errored.`;
+
+        source == null ? (msg += " Source missing.") : {};
+
+        destination == null ? (msg += " Destination missing.") : {};
 
         notifications.sendError(msg);
         console.error(msg, source, destination);
@@ -91,9 +95,8 @@
 
 <style lang="scss">
   .children {
-    width: auto;
     display: grid;
-    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    grid-template-columns: repeat(var(--cols), 1fr);
     justify-items: center;
     align-items: flex-end;
     grid-auto-rows: 1fr;

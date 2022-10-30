@@ -32,6 +32,8 @@
 
     if (connectionElement != null) connectionElement.remove();
 
+    if (p0 == null || p1 == null || p0.hash == null || p1.hash == null) return;
+
     const left = document.getElementById(p0.hash);
     const right = document.getElementById(p1.hash);
 
@@ -62,10 +64,10 @@
   .marriage {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 1;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
     align-items: center;
-    width: fit-content;
+    width: max-content;
     align-self: center;
     gap: 5rem;
   }

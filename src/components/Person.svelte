@@ -77,7 +77,9 @@
   .person-card {
     display: flex;
     flex-direction: column;
-    width: fit-content;
+
+    width: max-content;
+    
     gap: 0.3rem;
 
     padding: 1rem;

@@ -91,14 +91,11 @@
     adjustArrows();
 
     const resizeObserver = new ResizeObserver(() => adjustArrows());
-    // const mutationObserver = new MutationObserver(() => adjustArrows());
 
     resizeObserver.observe(wrapper);
-    // mutationObserver.observe(wrapper);
 
     return () => {
       resizeObserver.unobserve(wrapper);
-      // mutationObserver.disconnect();
     };
   });
 
@@ -155,7 +152,6 @@
     border-radius: 3rem;
   }
 
-  /* @media only print { */
   @media print {
     :global(html) {
       margin: 0;
@@ -185,17 +181,4 @@
       }
     }
   }
-
-  /* @media print {
-    :global(body),
-    #tree,
-    .wrapper {
-      display: block !important;
-      position: relative !important;
-      width: auto !important;
-      height: auto !important;
-      overflow: visible !important;
-      margin-left: 0 !important;
-    }
-  } */
 </style>

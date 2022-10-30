@@ -157,7 +157,7 @@ button:focus-visible {
 
 @media print {
   body {
-    zoom: 10%;
+    zoom: 35%;
   }
 
   h1 {
