@@ -142,7 +142,9 @@
         disabled={$people.size === 0 || formData.childOf != null}
       >
         <option value={undefined} />
-        <!-- TODO: What if second marriage? -->
+        <!-- TODO: What if second marriage?
+              workaround: add the same person second time as a different one
+        -->
         {#each $notMarried as [hash, person]}
           <option value={hash}>{person.getFullNameAbbr()}</option>
         {/each}

@@ -40,7 +40,8 @@
     if (left == null || right == null) return;
 
     // TODO: Save this somewhere?
-    const connection = new LeaderLine(left, right, arrowOptions);
+    new LeaderLine(left, right, arrowOptions);
+    // That's the recommended way to find the connection :/
     connectionElement = document.querySelector(
       "body > svg.leader-line:last-child"
     );

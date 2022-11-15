@@ -23,8 +23,6 @@
   },
   "dependencies": {
     "@macfja/svelte-persistent-store": "^2.2.1",
-    "arrows-svg": "^1.5.6",
-    "html2pdf.js": "^0.10.1",
     "just-clone": "^6.1.1",
     "just-compare": "^2.2.2",
     "leader-line-new": "^1.1.9",

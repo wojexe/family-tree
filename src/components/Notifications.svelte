@@ -11,14 +11,14 @@
     Array.from(notifs).filter(([_, notif]) => notif.visible !== false)
   );
 
-  const slideUp = (node: HTMLElement) => {
+  const slideUp = (node: HTMLElement, _params?: Object) => {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
 
     return {
       duration: 400,
       easing: quartOut,
-      css: (t, u) => `
+      css: (t: number, u: number) => `
         transform: ${transform} scale(${Math.max(0.8, t)}) translateY(${
         u * 50
       }px);
@@ -27,7 +27,7 @@
     };
   };
 
-  const slideRight = (node: HTMLElement) => {
+  const slideRight = (node: HTMLElement, _params?: Object) => {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
 

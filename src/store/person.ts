@@ -112,7 +112,7 @@ export class Person {
     this._marriageHash = hash;
   }
 
-  private constructor(d: globalThis.PersonForm) {
+  private constructor(d: PersonForm) {
     this._hash = nanoid(12);
 
     this._firstName = d.firstName;
@@ -123,7 +123,7 @@ export class Person {
     this._dateOfDeath = d.dateOfDeath ?? clone(d.dateOfDeath);
   }
 
-  public static async *create(data: globalThis.PersonForm) {
+  public static async *create(data: PersonForm) {
     let person = new Person(data);
 
     if (people.has({ person })) {
@@ -152,8 +152,6 @@ export class Person {
 
     // Handle parents
     if (data.childOf != null) {
-      // console.log(data.childOf);
-
       let parentFamily: Family;
       let unsubscribe = families.subscribe(
         (families) => (parentFamily = families.get(data.childOf))
@@ -207,7 +205,7 @@ export class Person {
     if (this.childOf != null) {
       families.removeChild(this.childOf, this);
     }
-    
+
     if (this.marriedWith != null) {
       families.removeFamily(this.marriageHash);
     }
@@ -247,7 +245,7 @@ export class Person {
   }
 
   /** You rather don't use this...
-   * 
+   *
    * Clears `marriedWith`, `marriageHash` and `married` fields from both persons
    */
   public divorce() {
@@ -269,7 +267,3 @@ export class Person {
     spouse.married = false;
   }
 }
-
-const s = (s: string | null | undefined) => (s != null ? s : "");
-const d = (d: { custom: boolean; date: string } | null | undefined) =>
-  d != null ? d.date : "";

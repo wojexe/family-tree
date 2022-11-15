@@ -1,6 +1,4 @@
 <script lang="ts">
-  // FIXME: Arrows get bugged, when changing the zoom level.
-
   import { modal } from "../store/store";
   import { Modal } from "svelte-simple-modal";
 
@@ -16,6 +14,8 @@
 
   $: firstFamily = $families.get($firstFamilyHash);
 
+  /*
+   * Personally I found this *feature* to be more distracting, than useful...
   const scrollToMiddle = async () => {
     await tick();
 
@@ -39,11 +39,13 @@
 
     treeWrapper.scroll({ left: scrollOffset, behavior: "smooth" });
   };
+  */
 
   $: if (firstFamily != null && firstFamily.hash != null) {
     const execute = async () => {
       try {
-        await scrollToMiddle();
+        await tick();
+        adjustArrows();
       } catch (e) {
         notifications.sendError(e);
       }

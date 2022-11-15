@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterUpdate, onMount, tick } from "svelte";
+  import { afterUpdate, tick } from "svelte";
   import LeaderLine, { type Options } from "leader-line-new";
 
   import {

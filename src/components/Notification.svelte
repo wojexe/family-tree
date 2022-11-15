@@ -17,7 +17,7 @@
     }
   };
 
-  const slideLeft = (node: HTMLElement, params?: { delay: number }) => {
+  const slideLeft = (node: HTMLElement, params?: { delay?: number }) => {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
 

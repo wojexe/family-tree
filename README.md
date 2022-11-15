@@ -1,48 +1,41 @@
-# Svelte + TS + Vite
+# Family tree creator
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+This project was motivated by my having to create a family tree, but not wanting to spend lots of money of software dedicated to create ones. And also, I wanted to learn Svelte and have extensive customization options.
 
-## Recommended IDE Setup
+## How to use
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+The project is online at <https://family.wojexe.com>.
 
-## Need an official Svelte framework?
+Here are some rules for adding people into the tree:
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+- Adding a person using the form, saves one's data in the memory
+- To display the tree, it has to have a root - that's the first *marriage* that was created
+- To ***marry*** two people
+  - *You must have at least one non-married person in the memory*
+  - *For a marriage to be displayed, exactly one of the married ones has to be a child of somebody else*
+  1. Fill the form with person's data
+  2. Pick a person you want current person to be married with, using the `Married with` field.
+- To ***edit*** a person, just click on their card - a modal will appear, where you'll be able to change nearly every data field  
+- To ***remove*** a person, enter the editing modal *(by clicking on the person's card)* and then click the delete button
+  - Deleting a person with children, will also delete their children, but will not delete their spouse
+  - **Behaviour of removing a person *(especially one with children / marriage)*, might not work properly sometimes - there are no guarantees, as there are no test yet.** *They'll be there, once I get the time to write them...*
+- You can print the tree, using the browser's print menu. Even though it is possible, there are some caveats:
+  - Printing in that manner only works with Chrome (maybe all Chromium)
+  - You have to create a custom canvas for large trees - they will overflow the page if too large
+  - **Sometimes the arrows might be misaligned, try refreshing the page** *(or do it a couple of times?)* **and then try printing again. If the bug persists - please create an issue, preferably with the exported tree pasted.**
+- **Import / Export** a tree: this feature is not a great experince, but it works...
+  - Exporting copies the tree's data to your clipboard
+  - Importing opens an dialog, where you have to paste the contents of your keyboard - paste only previously exported data, otherwise, things ***will*** break
+- The storage of the tree is persitent - tree will not disappear after a page refresh - you have to clean it using the button in the bottom left corner
 
-## Technical considerations
+## How to run
 
-**Why use this over SvelteKit?**
+1. Clone the repository - `git clone https://github.com/wojexe/family-tree.git`
+2. Install the necessary packages in the cloned project - `pnpm install`
+3. Run it with `pnpm run dev`
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
+## Credits
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+A big thanks to [anseki](https://github.com/anseki) for creating [LeaderLine](https://github.com/anseki/leader-line), which powers the generation of the arrows.
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
-```
+Another thank you to [MacFJA](https://github.com/MacFJA) for creating [svelte-persistent-store](https://github.com/MacFJA/svelte-persistent-store)
