@@ -1,6 +1,10 @@
 # Family tree creator
 
+![Example family tree created by this app](/screenshot.png)
+
 This project was motivated by my having to create a family tree, but not wanting to spend lots of money of software dedicated to create ones. And also, I wanted to learn Svelte and have extensive customization options.
+
+***At this moment there is no suppport for i18n, although it is a planned feature.***
 
 ## How to use
 
