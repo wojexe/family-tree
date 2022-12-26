@@ -1,0 +1,25 @@
+{
+  "titles": {
+    "familyTreeCreator": "Kreator drzewa genealogicznego",
+    "addNewPerson": "Dodaj nową osobę"
+  },
+  "person": {
+    "firstName": "Pierwsze imię",
+    "additionalName": "Drugie imię",
+    "lastName": "Nazwisko",
+    "birthName": "Nazwisko rodowe",
+    "birthNameFormat": "z d. {birthName}",
+    "birth": "Narodziny",
+    "death": "Śmierć",
+    "dateOfBirth": "Data narodzin",
+    "dateOfDeath": "Data śmierci",
+    "birthFormat": "ur. {date} r.",
+    "deathFormat": "zm. {date} r."
+  },
+  "buttons": {
+    "add": "Dodaj",
+    "clearTree": "Wyczyść drzewo",
+    "importTree": "Importuj drzewo",
+    "exportTree": "Eksportuj drzewo"
+  }
+}

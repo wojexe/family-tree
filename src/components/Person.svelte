@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { _, getDateFormatter } from "svelte-i18n";
+
   import type { EditableFields, Person } from "../store/person";
 
   import { families, modal, people } from "../store/store";
@@ -11,7 +13,9 @@
   const displayDate = ({ custom, date }: { custom: boolean; date: string }) => {
     if (custom) return date;
 
-    return Intl.DateTimeFormat("pl").format(new Date(date));
+    const dateFormatter = getDateFormatter();
+
+    return dateFormatter.format(new Date(date));
   };
 
   const onSubmit = async (edits: EditableFields) => {
@@ -43,20 +47,36 @@
       >
       {#if person.familyName}
         <span class="family-name"
-          >z d. <span class="last-name">{person.familyName}</span></span
+          >{@html $_("person.birthNameFormat", {
+            values: {
+              birthName: `<span class="last-name">${person.familyName}</span>`,
+            },
+          })}</span
         >
       {/if}
     </div>
 
     {#if person.dateOfBirth}
-      <span class="date-field"
-        >ur. <span class="date">{displayDate(person.dateOfBirth)}</span> r.</span
-      >
+      <span class="date-field">
+        {@html $_("person.birthFormat", {
+          values: {
+            date: `<span class="date">${displayDate(
+              person.dateOfBirth
+            )}</span>`,
+          },
+        })}
+      </span>
     {/if}
     {#if person.dateOfDeath}
-      <span class="date-field"
-        >zm. <span class="date">{displayDate(person.dateOfDeath)}</span> r.</span
-      >
+      <span class="date-field">
+        {@html $_("person.deathFormat", {
+          values: {
+            date: `<span class="date">${displayDate(
+              person.dateOfDeath
+            )}</span>`,
+          },
+        })}
+      </span>
     {/if}
   </div>
 {/if}
@@ -79,7 +99,7 @@
     flex-direction: column;
 
     width: max-content;
-    
+
     gap: 0.3rem;
 
     padding: 1rem;
@@ -113,13 +133,19 @@
         font-size: 0.8em;
       }
 
-      .last-name {
+      :global(.last-name) {
         font-weight: 600;
       }
     }
 
     .date-field {
       text-align: center;
+      font-style: italic;
+
+      :global(.date) {
+        font-weight: 600;
+        font-style: normal;
+      }
     }
   }
 </style>

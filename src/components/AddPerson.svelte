@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { _ } from "svelte-i18n";
   import { derived } from "svelte/store";
 
   import { people, families as familiesStore } from "../store/store";
@@ -62,16 +63,16 @@
     await people.add(formDataCopied);
   };
 
-  $: console.log($people);
-  $: console.log($familiesStore);
+  // $: console.log($people);
+  // $: console.log($familiesStore);
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-  <h2>Add new person</h2>
+  <h2>{$_("titles.addNewPerson")}</h2>
 
   <div class="grid">
     <label>
-      <span>First name</span>
+      <span>{$_("person.firstName")}</span>
       <input
         required
         autocomplete="given-name"
@@ -79,14 +80,14 @@
       />
     </label>
     <label>
-      <span>Additional name</span>
+      <span>{$_("person.additionalName")}</span>
       <input
         autocomplete="additional-name"
         bind:value={formData.additionalName}
       />
     </label>
     <label>
-      <span>Last name</span>
+      <span>{$_("person.lastName")}</span>
       <input
         required
         autocomplete="family-name"
@@ -94,7 +95,7 @@
       />
     </label>
     <label>
-      <span>Family Name</span>
+      <span>{$_("person.birthName")}</span>
       <input autocomplete="off" bind:value={formData.familyName} />
     </label>
     <div class="custom-dates">
@@ -104,7 +105,7 @@
           type="checkbox"
           bind:checked={formData.dateOfBirth.custom}
         />
-        <label for="birth"><span>Birth</span></label>
+        <label for="birth"><span>{$_("person.birth")}</span></label>
       </div>
       <div>
         <input
@@ -112,11 +113,11 @@
           type="checkbox"
           bind:checked={formData.dateOfDeath.custom}
         />
-        <label for="death"><span>Death</span></label>
+        <label for="death"><span>{$_("person.death")}</span></label>
       </div>
     </div>
     <label>
-      <span>Date of Birth</span>
+      <span>{$_("person.dateOfBirth")}</span>
       {#if formData.dateOfBirth.custom}
         <input type="text" bind:value={formData.dateOfBirth.date} />
       {:else}
@@ -128,7 +129,7 @@
       {/if}
     </label>
     <label>
-      <span>Date of Death</span>
+      <span>{$_("person.dateOfDeath")}</span>
       {#if formData.dateOfDeath.custom}
         <input type="text" bind:value={formData.dateOfDeath.date} />
       {:else}
@@ -168,7 +169,7 @@
     </select>
   </label>
 
-  <button type="submit">Add</button>
+  <button type="submit">{$_("buttons.add")}</button>
 </form>
 
 <style lang="scss">

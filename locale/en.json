@@ -1,0 +1,25 @@
+{
+  "titles": {
+    "familyTreeCreator": "Family tree creator",
+    "addNewPerson": "Add new person"
+  },
+  "person": {
+    "firstName": "First name",
+    "additionalName": "Additional name",
+    "lastName": "Last name",
+    "birthName": "Birth name",
+    "birthNameFormat": "from the {birthName} family",
+    "birth": "Birth",
+    "death": "Death",
+    "dateOfBirth": "Date of birth",
+    "dateOfDeath": "Date of death",
+    "birthFormat": "Born {date}",
+    "deathFormat": "Died {date}"
+  },
+  "buttons": {
+    "add": "Add",
+    "clearTree": "Clear tree",
+    "importTree": "Import tree",
+    "exportTree": "Export tree"
+  }
+}
