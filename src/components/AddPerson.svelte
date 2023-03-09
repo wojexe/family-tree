@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { _ } from "svelte-i18n";
   import { derived } from "svelte/store";
+  import { t } from "svelte-intl-precompile";
 
-  import { people, families as familiesStore } from "../store/store";
+  import { families as familiesStore, people } from "../store/store";
 
   const notMarried = derived(people, (people) =>
     Array.from(people)
@@ -27,29 +27,24 @@
     firstName: "",
     lastName: "",
     dateOfBirth: { custom: false, date: "" },
-    dateOfDeath: { custom: false, date: "" },
+    dateOfDeath: { custom: false, date: "" }
   };
 
   const handleSubmit = async () => {
     let formDataCopied = { ...formData };
 
-    if (formDataCopied.dateOfBirth.date === "") {
-      formDataCopied.dateOfBirth = null;
+    if (formDataCopied.dateOfBirth?.date === "") {
+      formDataCopied.dateOfBirth = undefined;
     }
 
-    if (formDataCopied.dateOfDeath.date === "") {
-      formDataCopied.dateOfDeath = null;
+    if (formDataCopied.dateOfDeath?.date === "") {
+      formDataCopied.dateOfDeath = undefined;
     }
 
-    // @ts-ignore
     // Clear empty strings
     formDataCopied = Object.fromEntries(
       Object.entries(formDataCopied).map(([key, val]) =>
-        typeof val === "string"
-          ? val.trim() !== ""
-            ? [key, val.trim()]
-            : [key, null]
-          : [key, val]
+        typeof val === "string" ? (val.trim() !== "" ? [key, val.trim()] : [key, null]) : [key, val]
       )
     );
 
@@ -57,7 +52,7 @@
       firstName: "",
       lastName: "",
       dateOfBirth: { custom: false, date: "" },
-      dateOfDeath: { custom: false, date: "" },
+      dateOfDeath: { custom: false, date: "" }
     };
 
     await people.add(formDataCopied);
@@ -68,69 +63,46 @@
 </script>
 
 <form on:submit|preventDefault={handleSubmit}>
-  <h2>{$_("titles.addNewPerson")}</h2>
+  <h2>{$t("titles.addNewPerson")}</h2>
 
   <div class="grid">
     <label>
-      <span>{$_("person.firstName")}</span>
-      <input
-        required
-        autocomplete="given-name"
-        bind:value={formData.firstName}
-      />
+      <span>{$t("person.firstName")}</span>
+      <input required autocomplete="given-name" bind:value={formData.firstName} />
     </label>
     <label>
-      <span>{$_("person.additionalName")}</span>
-      <input
-        autocomplete="additional-name"
-        bind:value={formData.additionalName}
-      />
+      <span>{$t("person.additionalName")}</span>
+      <input autocomplete="additional-name" bind:value={formData.additionalName} />
     </label>
     <label>
-      <span>{$_("person.lastName")}</span>
-      <input
-        required
-        autocomplete="family-name"
-        bind:value={formData.lastName}
-      />
+      <span>{$t("person.lastName")}</span>
+      <input required autocomplete="family-name" bind:value={formData.lastName} />
     </label>
     <label>
-      <span>{$_("person.birthName")}</span>
+      <span>{$t("person.birthName")}</span>
       <input autocomplete="off" bind:value={formData.familyName} />
     </label>
     <div class="custom-dates">
       <div>
-        <input
-          id="birth"
-          type="checkbox"
-          bind:checked={formData.dateOfBirth.custom}
-        />
-        <label for="birth"><span>{$_("person.birth")}</span></label>
+        <input id="birth" type="checkbox" bind:checked={formData.dateOfBirth.custom} />
+        <label for="birth"><span>{$t("person.birth")}</span></label>
       </div>
       <div>
-        <input
-          id="death"
-          type="checkbox"
-          bind:checked={formData.dateOfDeath.custom}
-        />
-        <label for="death"><span>{$_("person.death")}</span></label>
+        <input id="death" type="checkbox" bind:checked={formData.dateOfDeath.custom} />
+        <label for="death"><span>{$t("person.death")}</span></label>
       </div>
     </div>
     <label>
-      <span>{$_("person.dateOfBirth")}</span>
-      {#if formData.dateOfBirth.custom}
+      <span>{$t("person.dateOfBirth")}</span>
+      {#if formData.dateOfBirth?.custom}
         <input type="text" bind:value={formData.dateOfBirth.date} />
       {:else}
-        <input
-          autocomplete="bday"
-          type="date"
-          bind:value={formData.dateOfBirth.date}
-        />
+        <input autocomplete="bday" type="date" bind:value={formData.dateOfBirth.date} />
       {/if}
     </label>
     <label>
-      <span>{$_("person.dateOfDeath")}</span>
-      {#if formData.dateOfDeath.custom}
+      <span>{$t("person.dateOfDeath")}</span>
+      {#if formData.dateOfDeath?.custom}
         <input type="text" bind:value={formData.dateOfDeath.date} />
       {:else}
         <input type="date" bind:value={formData.dateOfDeath.date} />
@@ -161,15 +133,13 @@
       <option value={undefined} />
       {#each $families as { hash, marriage: { between: [p0, p1] } }}
         <option value={hash}>
-          {`${$people.get(p0)?.getFullNameAbbr()} & ${$people
-            .get(p1)
-            ?.getFullNameAbbr()}`}
+          {`${$people.get(p0)?.getFullNameAbbr()} & ${$people.get(p1)?.getFullNameAbbr()}`}
         </option>
       {/each}
     </select>
   </label>
 
-  <button type="submit">{$_("buttons.add")}</button>
+  <button type="submit">{$t("buttons.add")}</button>
 </form>
 
 <style lang="scss">

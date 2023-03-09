@@ -1,10 +1,9 @@
-import compare from "just-compare";
 import clone from "just-clone";
-
+import compare from "just-compare";
 import { nanoid } from "nanoid/non-secure";
 
-import { families, notifications, people } from "./store";
 import type { Family } from "../types/family";
+import { families, notifications, people } from "./store";
 
 export interface EditableFields {
   firstName?: string;
@@ -38,7 +37,7 @@ export class Person {
   private _marriageHash?: string;
 
   /** Limits the marriage to happen only once */
-  private _married: boolean = false;
+  private _married = false;
   public get married(): boolean {
     return this._married;
   }
@@ -57,74 +56,82 @@ export class Person {
   public get hash(): string {
     return this._hash;
   }
+
   public get firstName() {
     return this._firstName;
   }
   public set firstName(value: string) {
     this._firstName = value;
   }
+
   public get lastName() {
     return this._lastName;
   }
   public set lastName(value: string) {
     this._lastName = value;
   }
+
   public get additionalName() {
     return this._additionalName;
   }
-  public set additionalName(value: string) {
+  public set additionalName(value: string | undefined) {
     this._additionalName = value;
   }
+
   public get familyName() {
     return this._familyName;
   }
-  public set familyName(value: string) {
+  public set familyName(value: string | undefined) {
     this._familyName = value;
   }
+
   public get dateOfBirth() {
     return this._dateOfBirth;
   }
-  public set dateOfBirth(value: { custom: boolean; date: string }) {
-    this._dateOfBirth = clone(value);
+  public set dateOfBirth(value: { custom: boolean; date: string } | undefined) {
+    this._dateOfBirth = value == null ? value : clone(value);
   }
+
   public get dateOfDeath() {
     return this._dateOfDeath;
   }
-  public set dateOfDeath(value: { custom: boolean; date: string }) {
-    this._dateOfDeath = clone(value);
+  public set dateOfDeath(value: { custom: boolean; date: string } | undefined) {
+    this._dateOfDeath = value == null ? value : clone(value);
   }
+
   public get marriedWith() {
     return this._marriedWith;
   }
+  private set marriedWith(person: Person | undefined) {
+    this._marriedWith = person;
+  }
+
   public get marriageHash() {
     return this._marriageHash;
   }
-  public get childOf() {
-    return this._childOf;
-  }
-  public set childOf(childOf: string) {
-    this._childOf = childOf;
-  }
-  private set marriedWith(person: Person) {
-    this._marriedWith = person;
-  }
-  private set marriageHash(hash: string) {
+  private set marriageHash(hash: string | undefined) {
     this._marriageHash = hash;
   }
 
+  public get childOf() {
+    return this._childOf;
+  }
+  public set childOf(childOf: string | undefined) {
+    this._childOf = childOf;
+  }
   private constructor(d: PersonForm) {
     this._hash = nanoid(12);
 
     this._firstName = d.firstName;
     this._lastName = d.lastName;
-    this._additionalName = d.additionalName ?? null;
-    this._familyName = d.familyName ?? null;
-    this._dateOfBirth = d.dateOfBirth ?? clone(d.dateOfBirth);
-    this._dateOfDeath = d.dateOfDeath ?? clone(d.dateOfDeath);
+    this._additionalName = d.additionalName ?? undefined;
+    this._familyName = d.familyName ?? undefined;
+    this._dateOfBirth = d.dateOfBirth == null ? d.dateOfBirth : clone(d.dateOfBirth);
+    this._dateOfDeath = d.dateOfDeath == null ? d.dateOfDeath : clone(d.dateOfDeath);
   }
 
   public static async *create(data: PersonForm) {
-    let person = new Person(data);
+    const person = new Person(data);
 
     if (people.has({ person })) {
       throw new Error(`${person.getFullNameAbbr()} already exists.`);
@@ -134,42 +141,30 @@ export class Person {
 
     // Handle marriage
     if (data.marriedWith != null) {
-      let spouse: Person;
-      people.subscribe((people) => (spouse = people.get(data.marriedWith)))();
+      let spouse: Person | undefined;
+      people.subscribe((people) => (spouse = people.get(data.marriedWith ?? "")))();
 
       if (spouse == null) {
-        throw new Error(
-          `Spouse provided with ${person.getFullNameAbbr()} does not exist!`
-        );
+        throw new Error(`Spouse provided with ${person.getFullNameAbbr()} does not exist!`);
       }
 
-      try {
-        person.marry(spouse);
-      } catch (e) {
-        throw e;
-      }
+      person.marry(spouse);
     }
 
     // Handle parents
     if (data.childOf != null) {
-      let parentFamily: Family;
-      let unsubscribe = families.subscribe(
-        (families) => (parentFamily = families.get(data.childOf))
+      let parentFamily: Family | undefined;
+      const unsubscribe = families.subscribe(
+        (families) => (parentFamily = families.get(data.childOf ?? ""))
       );
 
       if (parentFamily == null) {
-        throw new Error(
-          `Family provided with ${person.getFullNameAbbr()} does not exist!`
-        );
+        throw new Error(`Family provided with ${person.getFullNameAbbr()} does not exist!`);
       }
 
       person._childOf = data.childOf;
 
-      try {
-        families.addChild(person);
-      } catch (e) {
-        throw e;
-      }
+      families.addChild(person);
 
       unsubscribe();
     }
@@ -184,9 +179,9 @@ export class Person {
   }
 
   public getFullName() {
-    return `${this.firstName} ${
-      this.additionalName != null ? `${this.additionalName} ` : ""
-    }${this.lastName}${this.familyName != null ? ` - ${this.familyName}` : ""}`;
+    return `${this.firstName} ${this.additionalName != null ? `${this.additionalName} ` : ""}${
+      this.lastName
+    }${this.familyName != null ? ` - ${this.familyName}` : ""}`;
   }
 
   /** TODO: make editing a person possible everywhere */
@@ -207,7 +202,7 @@ export class Person {
     }
 
     if (this.marriedWith != null) {
-      families.removeFamily(this.marriageHash);
+      families.removeFamily(this.marriageHash as string);
     }
 
     people.remove(this);
@@ -225,7 +220,7 @@ export class Person {
     this.marriedWith = person;
     person.marriedWith = this;
 
-    let spouse = this.marriedWith;
+    const spouse = this.marriedWith;
 
     if (this.marriageHash == null) {
       const marriageHash = nanoid(12);
@@ -236,11 +231,7 @@ export class Person {
       this.married = true;
       spouse.married = true;
 
-      try {
-        families.add(this, spouse);
-      } catch (e) {
-        throw e;
-      }
+      families.add(this, spouse);
     }
   }
 
@@ -253,16 +244,16 @@ export class Person {
       throw new Error(`${this.getFullNameAbbr()} not married!`);
     }
 
-    let spouse = this.marriedWith;
+    const spouse = this.marriedWith;
 
     if (spouse.marriedWith == null) {
       throw new Error(`${spouse.getFullNameAbbr()} not married!`);
     }
 
-    this.marriedWith = null;
-    spouse.marriedWith = null;
-    this.marriageHash = null;
-    spouse.marriageHash = null;
+    this.marriedWith = undefined;
+    spouse.marriedWith = undefined;
+    this.marriageHash = undefined;
+    spouse.marriageHash = undefined;
     this.married = false;
     spouse.married = false;
   }

@@ -1,14 +1,8 @@
 <script lang="ts">
-  import { afterUpdate, tick } from "svelte";
   import LeaderLine, { type Options } from "leader-line-new";
+  import { afterUpdate, tick } from "svelte";
 
-  import {
-    arrowsContainer,
-    families,
-    notifications,
-    people,
-  } from "../store/store";
-
+  import { arrowsContainer, families, notifications, people } from "../store/store";
   import Family from "./Family.svelte";
 
   export let children: Array<string>;
@@ -25,7 +19,7 @@
     endSocket: "bottom",
     startSocketGravity: 0,
     endSocketGravity: 0,
-    path: "grid",
+    path: "grid"
     // startSocketGravity: 50,
     // endSocketGravity: 30,
     // path: "fluid",
@@ -63,9 +57,7 @@
       }
 
       const connection = new LeaderLine(source, destination, arrowOptions);
-      let connectionElement = document.querySelector(
-        "body > svg.leader-line:last-child"
-      );
+      let connectionElement = document.querySelector("body > svg.leader-line:last-child");
 
       arrowsContainer.update((el) => {
         el.appendChild(connectionElement);

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { families } from "../store/store";
   import type { Person } from "../store/person";
-
+  import { families } from "../store/store";
+  import type { Family } from "../types/family";
   import Children from "./Children.svelte";
   import Marriage from "./Marriage.svelte";
   import { default as PersonComponent } from "./Person.svelte";
-  import type { Family } from "../types/family";
 
   export let family: Family = null;
   export let person: Person = null;

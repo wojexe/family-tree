@@ -1,5 +1,3 @@
-import type Person from "../store/person";
-
 export interface Family {
   hash: string;
   marriage: Marriage;

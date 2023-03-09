@@ -1,11 +1,10 @@
-import { defineConfig } from "vite";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import basicSsl from "@vitejs/plugin-basic-ssl";
+import { sveltekit } from "@sveltejs/kit/vite";
+import precompileIntl from "svelte-intl-precompile/sveltekit-plugin";
+import { defineConfig } from "vitest/config";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  server: {
-    https: true,
-  },
-  plugins: [svelte(), basicSsl()],
+  plugins: [sveltekit(), precompileIntl("locales")],
+  test: {
+    include: ["src/**/*.{test,spec}.{js,ts}"]
+  }
 });

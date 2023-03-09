@@ -22,12 +22,12 @@
     const transform = style.transform === "none" ? "" : style.transform;
 
     return {
-      delay: params.delay || 400,
+      delay: params?.delay || 400,
       duration: 400,
       easing: quartOut,
       css: (t: number, u: number) => `
         transform: ${transform} translateX(${2 * u}rem) scale(${t});
-      `,
+      `
     };
   };
 
@@ -58,7 +58,7 @@
 
             break;
         }
-      },
+      }
     };
   };
 

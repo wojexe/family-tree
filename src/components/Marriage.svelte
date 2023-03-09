@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { afterUpdate, tick } from "svelte";
   import LeaderLine, { type Options } from "leader-line-new";
+  import { afterUpdate, tick } from "svelte";
 
-  import type { Family, Marriage } from "../types/family";
   import { arrowsContainer, people } from "../store/store";
-
+  import type { Family, Marriage } from "../types/family";
   import Person from "./Person.svelte";
 
   export let family: Family = null;
@@ -22,7 +21,7 @@
   const arrowOptions: Options = {
     color: "hsl(var(--border-color))",
     startPlug: "arrow2",
-    endPlug: "arrow2",
+    endPlug: "arrow2"
   };
 
   let connectionElement: HTMLElement;
@@ -42,9 +41,7 @@
     // TODO: Save this somewhere?
     new LeaderLine(left, right, arrowOptions);
     // That's the recommended way to find the connection :/
-    connectionElement = document.querySelector(
-      "body > svg.leader-line:last-child"
-    );
+    connectionElement = document.querySelector("body > svg.leader-line:last-child");
 
     arrowsContainer.update((el) => {
       el.appendChild(connectionElement);

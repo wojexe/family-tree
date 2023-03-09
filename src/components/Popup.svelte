@@ -1,8 +1,8 @@
 <script lang="ts">
   import clone from "just-clone";
 
-  import { modal } from "../store/store";
   import type { EditableFields, Person } from "../store/person";
+  import { modal } from "../store/store";
 
   export let person: Person;
   export let onSubmit: (edits: EditableFields) => void;
@@ -24,35 +24,26 @@
     additionalName: person.additionalName,
     familyName: person.familyName,
     dateOfBirth:
-      person.dateOfBirth == null
-        ? { custom: false, date: "" }
-        : clone(person.dateOfBirth),
+      person.dateOfBirth == null ? { custom: false, date: "" } : clone(person.dateOfBirth),
     dateOfDeath:
-      person.dateOfDeath == null
-        ? { custom: false, date: "" }
-        : clone(person.dateOfDeath),
+      person.dateOfDeath == null ? { custom: false, date: "" } : clone(person.dateOfDeath)
   };
 
   const handleSubmit = async () => {
     let copied = clone(fields);
 
-    if (copied.dateOfBirth.date === "") {
-      copied.dateOfBirth = null;
+    if (copied.dateOfBirth?.date === "") {
+      copied.dateOfBirth = undefined;
     }
 
-    if (copied.dateOfDeath.date === "") {
-      copied.dateOfDeath = null;
+    if (copied.dateOfDeath?.date === "") {
+      copied.dateOfDeath = undefined;
     }
 
-    // @ts-ignore
     // Clear empty strings
     copied = Object.fromEntries(
       Object.entries(copied).map(([key, val]) =>
-        typeof val === "string"
-          ? val.trim() !== ""
-            ? [key, val.trim()]
-            : [key, null]
-          : [key, val]
+        typeof val === "string" ? (val.trim() !== "" ? [key, val.trim()] : [key, null]) : [key, val]
       )
     );
 
@@ -65,7 +56,7 @@
       additionalName: "",
       familyName: "",
       dateOfBirth: { custom: false, date: "" },
-      dateOfDeath: { custom: false, date: "" },
+      dateOfDeath: { custom: false, date: "" }
     };
   };
 </script>
@@ -80,10 +71,7 @@
     </label>
     <label>
       <span>Additional name</span>
-      <input
-        autocomplete="additional-name"
-        bind:value={fields.additionalName}
-      />
+      <input autocomplete="additional-name" bind:value={fields.additionalName} />
     </label>
     <label>
       <span>Last name</span>
@@ -95,37 +83,25 @@
     </label>
     <div class="custom-dates">
       <div>
-        <input
-          id="birth"
-          type="checkbox"
-          bind:checked={fields.dateOfBirth.custom}
-        />
+        <input id="birth" type="checkbox" bind:checked={fields.dateOfBirth.custom} />
         <label for="birth"><span>Birth</span></label>
       </div>
       <div>
-        <input
-          id="death"
-          type="checkbox"
-          bind:checked={fields.dateOfDeath.custom}
-        />
+        <input id="death" type="checkbox" bind:checked={fields.dateOfDeath.custom} />
         <label for="death"><span>Death</span></label>
       </div>
     </div>
     <label>
       <span>Date of Birth</span>
-      {#if fields.dateOfBirth.custom}
+      {#if fields.dateOfBirth?.custom}
         <input type="text" bind:value={fields.dateOfBirth.date} />
       {:else}
-        <input
-          autocomplete="bday"
-          type="date"
-          bind:value={fields.dateOfBirth.date}
-        />
+        <input autocomplete="bday" type="date" bind:value={fields.dateOfBirth.date} />
       {/if}
     </label>
     <label>
       <span>Date of Death</span>
-      {#if fields.dateOfDeath.custom}
+      {#if fields.dateOfDeath?.custom}
         <input type="text" bind:value={fields.dateOfDeath.date} />
       {:else}
         <input type="date" bind:value={fields.dateOfDeath.date} />
@@ -135,10 +111,8 @@
 
   <div class="buttons">
     <button type="submit">Confirm</button>
-    <button
-      type="button"
-      on:click|preventDefault={confirmChoice}
-      style={"border-color: red;"}>DELETE</button
+    <button type="button" on:click|preventDefault={confirmChoice} style={"border-color: red;"}
+      >DELETE</button
     >
   </div>
 </form>

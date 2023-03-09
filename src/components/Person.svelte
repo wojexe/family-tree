@@ -1,21 +1,19 @@
 <script lang="ts">
-  import { _, getDateFormatter } from "svelte-i18n";
-
+  import { families, modal, people } from "../store/store";
   import type { EditableFields, Person } from "../store/person";
 
-  import { families, modal, people } from "../store/store";
+  import { t, date } from "svelte-intl-precompile";
   import { bind } from "svelte-simple-modal";
+
   import Popup from "./Popup.svelte";
 
   export let person: Person;
-  export let id: string = null;
+  export let id: string | null = null;
 
   const displayDate = ({ custom, date }: { custom: boolean; date: string }) => {
     if (custom) return date;
 
-    const dateFormatter = getDateFormatter();
-
-    return dateFormatter.format(new Date(date));
+    return $date(new Date(date));
   };
 
   const onSubmit = async (edits: EditableFields) => {
@@ -32,8 +30,7 @@
 
   const onDelete = () => person.remove();
 
-  const showModal = () =>
-    modal.set(bind(Popup, { person, onSubmit, onDelete }));
+  const showModal = () => modal.set(bind(Popup, { person, onSubmit, onDelete }));
 </script>
 
 {#if person != null}
@@ -47,10 +44,10 @@
       >
       {#if person.familyName}
         <span class="family-name"
-          >{@html $_("person.birthNameFormat", {
+          >{@html $t("person.birthNameFormat", {
             values: {
-              birthName: `<span class="last-name">${person.familyName}</span>`,
-            },
+              birthName: `<span class="last-name">${person.familyName}</span>`
+            }
           })}</span
         >
       {/if}
@@ -58,23 +55,19 @@
 
     {#if person.dateOfBirth}
       <span class="date-field">
-        {@html $_("person.birthFormat", {
+        {@html $t("person.birthFormat", {
           values: {
-            date: `<span class="date">${displayDate(
-              person.dateOfBirth
-            )}</span>`,
-          },
+            date: `<span class="date">${displayDate(person.dateOfBirth)}</span>`
+          }
         })}
       </span>
     {/if}
     {#if person.dateOfDeath}
       <span class="date-field">
-        {@html $_("person.deathFormat", {
+        {@html $t("person.deathFormat", {
           values: {
-            date: `<span class="date">${displayDate(
-              person.dateOfDeath
-            )}</span>`,
-          },
+            date: `<span class="date">${displayDate(person.dateOfDeath)}</span>`
+          }
         })}
       </span>
     {/if}

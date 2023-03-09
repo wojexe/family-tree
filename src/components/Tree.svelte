@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { modal } from "../store/store";
+  import { afterUpdate, onMount, tick } from "svelte";
   import { Modal } from "svelte-simple-modal";
 
-  import Family from "./Family.svelte";
+  import { modal } from "../store/store";
   import {
+    arrowsContainer,
     families,
     firstFamilyHash,
-    arrowsContainer,
-    treeContainer,
     notifications,
+    treeContainer
   } from "../store/store";
-  import { tick, onMount, afterUpdate } from "svelte";
+  import Family from "./Family.svelte";
 
   $: firstFamily = $families.get($firstFamilyHash);
 
@@ -47,7 +47,7 @@
         await tick();
         adjustArrows();
       } catch (e) {
-        notifications.sendError(e);
+        notifications.sendError(`${e}`);
       }
     };
 
@@ -62,22 +62,14 @@
     const rect = element.getBoundingClientRect();
     const style = getComputedStyle(element);
 
-    return (
-      rect.bottom -
-      parseFloat(style.borderBottomWidth) -
-      parseFloat(style.paddingBottom)
-    );
+    return rect.bottom - parseFloat(style.borderBottomWidth) - parseFloat(style.paddingBottom);
   };
 
   const getContentLeft = (element: HTMLElement) => {
     const rect = element.getBoundingClientRect();
     const style = getComputedStyle(element);
 
-    return (
-      rect.left +
-      parseFloat(style.borderLeftWidth) +
-      parseFloat(style.paddingLeft)
-    );
+    return rect.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
   };
 
   const adjustArrows = () => {
@@ -104,11 +96,7 @@
   afterUpdate(() => adjustArrows());
 </script>
 
-<div
-  bind:this={tree}
-  id="tree"
-  style={firstFamily != null ? "" : "display: none"}
->
+<div bind:this={tree} id="tree" style={firstFamily != null ? "" : "display: none"}>
   <div bind:this={wrapper} class="wrapper">
     <Modal
       show={$modal}
@@ -117,7 +105,7 @@
         backgroundColor: "hsl(var(--card-background))",
         borderRadius: "32px",
         width: "max-content",
-        padding: 0,
+        padding: 0
       }}
     >
       <Family family={firstFamily} />

@@ -1,23 +1,21 @@
-import { writable } from "svelte/store";
 import { persistBrowserLocal } from "@macfja/svelte-persistent-store";
+import { type Writable, writable } from "svelte/store";
 
-import { createPeople } from "./people";
 import { createFamilies } from "./families";
 import { createNotifications } from "./notifications";
+import { createPeople } from "./people";
 
 export const people = createPeople();
 export const families = createFamilies();
 export const notifications = createNotifications();
 
-export const firstFamilyHash = persistBrowserLocal(
-  writable<string>(),
-  "firstFamily"
-);
+export const firstFamilyHash = persistBrowserLocal(writable<string>(), "firstFamily");
 
-export const treeContainer = writable<HTMLDivElement>(null);
-export const arrowsContainer = writable<HTMLDivElement>(null);
+export const treeContainer = writable<HTMLDivElement>(undefined);
+export const arrowsContainer = writable<HTMLDivElement>(undefined);
 
-export const modal = writable(null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const modal: Writable<any> = writable(null);
 
 export const resetStore = () => {
   people.clear();
@@ -36,24 +34,22 @@ export const resetStore = () => {
 };
 
 export const importTree = async () => {
-  notifications.sendTrace("Importing tree!");
+  notifications.sendTrace("Starting the import!");
   if (window.confirm("This will overwrite any tree you have created!")) {
-    let paste = window.prompt("Paste your clipboard contents:");
+    const paste = window.prompt("Paste your clipboard contents:");
 
     try {
-      let json = JSON.parse(paste);
+      const json = JSON.parse(paste ?? "") as object;
 
-      //@ts-ignore
       Object.entries(json).forEach(([key, val]: [string, string]) =>
         localStorage.setItem(key, val)
       );
     } catch (e) {
-      throw new Error(e);
+      notifications.sendError("Something bad happened while importing a tree.");
+      throw e;
     }
 
-    notifications.sendInfo(
-      "Tree successfully imported! The page will reload in 5 seconds."
-    );
+    notifications.sendInfo("Tree successfully imported! The page will reload in 5 seconds.");
 
     setTimeout(() => location.reload(), 5000);
   } else {

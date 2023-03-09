@@ -1,4 +1,4 @@
-import { writable, type Readable } from "svelte/store";
+import { type Readable, writable } from "svelte/store";
 
 import type { Notification } from "../types/notification";
 import { NotificationLevel } from "../types/notification";
@@ -25,11 +25,9 @@ export const createNotifications = (): ReadableMessages => {
       return value + 1;
     });
 
-    let date = new Date();
+    const date = new Date();
 
-    notifications.update((map) =>
-      map.set(id, { id, date, level, message, visible: true })
-    );
+    notifications.update((map) => map.set(id, { id, date, level, message, visible: true }));
   };
 
   const changeVisibility = (id: number, visible: boolean) => {
@@ -56,6 +54,6 @@ export const createNotifications = (): ReadableMessages => {
     sendError,
     sendInfo,
     sendTrace,
-    changeVisibility,
+    changeVisibility
   };
 };

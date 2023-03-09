@@ -1,13 +1,8 @@
-import { writable, type Readable } from "svelte/store";
-import {
-  persist,
-  createLocalStorage,
-  addSerializableClass,
-} from "@macfja/svelte-persistent-store";
+import { addSerializableClass, createLocalStorage, persist } from "@macfja/svelte-persistent-store";
+import { type Readable, writable } from "svelte/store";
 
 import { Person } from "./person";
-// @ts-ignore
-addSerializableClass(Person);
+addSerializableClass(Person as any); // Has private constructor
 
 import { families, notifications } from "./store";
 
@@ -22,11 +17,7 @@ interface ReadablePeople<T> extends Readable<T> {
 }
 
 export const createPeople = (): ReadablePeople<Map<string, Person>> => {
-  const people = persist(
-    writable(new Map<string, Person>()),
-    createLocalStorage(true),
-    "people"
-  );
+  const people = persist(writable(new Map<string, Person>()), createLocalStorage(true), "people");
 
   const add = async (data: PersonForm) => {
     let hash: string;
@@ -53,7 +44,7 @@ export const createPeople = (): ReadablePeople<Map<string, Person>> => {
         return map;
       });
 
-      notifications.sendError(e);
+      notifications.sendError(`${e}`);
     }
 
     // Add the person to the map
@@ -69,9 +60,7 @@ export const createPeople = (): ReadablePeople<Map<string, Person>> => {
   const has = (data?: { person?: Person; hash?: string }) => {
     let result: boolean;
 
-    people.subscribe(
-      (map) => (result = map.has(data.person.hash ?? data.hash ?? "nope"))
-    )();
+    people.subscribe((map) => (result = map.has(data?.person?.hash ?? data?.hash ?? "nope")))();
 
     return result;
   };
@@ -84,12 +73,14 @@ export const createPeople = (): ReadablePeople<Map<string, Person>> => {
     });
   };
 
+  // Does nothing?
   const regen = (person: Person) => {
     people.update((map) => map.set(person.hash, person));
-    if (person.childOf) {
-    }
+    // if (person.childOf) {
+    // }
   };
 
+  // Does nothing also? It may update the state. I think... 💀
   const update = () => {
     people.update((map) => map);
   };
