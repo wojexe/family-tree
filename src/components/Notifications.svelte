@@ -49,8 +49,8 @@
         duration: (d) => Math.sqrt(d * 5000),
         easing: quartOut,
       }}
-      in:slideUp
-      out:slideRight
+      in:slideUp|global
+      out:slideRight|global
     >
       <Notification {id} {visible} {level} {message} />
     </span>
