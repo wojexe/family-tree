@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import basicSsl from "@vitejs/plugin-basic-ssl";
@@ -8,4 +9,12 @@ export default defineConfig({
     https: true,
   },
   plugins: [svelte(), basicSsl()],
+  test: {
+    globals: true,
+    environment: "jsdom",
+    includeSource: ["src/**/*.{js,ts,svelte}"],
+  },
+  define: {
+    "import.meta.vitest": "undefined",
+  },
 });
