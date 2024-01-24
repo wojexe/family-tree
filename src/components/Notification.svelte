@@ -79,7 +79,7 @@
   on:blur={() => (haltTimer = false)}
 >
   {#if visible}
-    <span class={`${levelString(level)} level-marker`} transition:slideLeft />
+    <span class={`${levelString(level)} level-marker`} transition:slideLeft|global />
   {/if}
   {message}
 </div>
