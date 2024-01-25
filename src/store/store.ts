@@ -1,9 +1,9 @@
-import { writable } from "svelte/store";
 import { persistBrowserLocal } from "@macfja/svelte-persistent-store";
+import { writable } from "svelte/store";
 
-import { createPeople } from "./people";
 import { createFamilies } from "./families";
 import { createNotifications } from "./notifications";
+import { createPeople } from "./people";
 
 export const people = createPeople();
 export const families = createFamilies();
@@ -11,7 +11,7 @@ export const notifications = createNotifications();
 
 export const firstFamilyHash = persistBrowserLocal(
   writable<string>(),
-  "firstFamily"
+  "firstFamily",
 );
 
 export const treeContainer = writable<HTMLDivElement>(null);
@@ -38,21 +38,21 @@ export const resetStore = () => {
 export const importTree = async () => {
   notifications.sendTrace("Importing tree!");
   if (window.confirm("This will overwrite any tree you have created!")) {
-    let paste = window.prompt("Paste your clipboard contents:");
+    const paste = window.prompt("Paste your clipboard contents:");
 
     try {
-      let json = JSON.parse(paste);
+      const json = JSON.parse(paste);
 
       //@ts-ignore
       Object.entries(json).forEach(([key, val]: [string, string]) =>
-        localStorage.setItem(key, val)
+        localStorage.setItem(key, val),
       );
     } catch (e) {
       throw new Error(e);
     }
 
     notifications.sendInfo(
-      "Tree successfully imported! The page will reload in 5 seconds."
+      "Tree successfully imported! The page will reload in 5 seconds.",
     );
 
     setTimeout(() => location.reload(), 5000);

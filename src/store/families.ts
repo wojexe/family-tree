@@ -1,5 +1,5 @@
-import { writable, type Readable } from "svelte/store";
-import { persist, createLocalStorage } from "@macfja/svelte-persistent-store";
+import { createLocalStorage, persist } from "@macfja/svelte-persistent-store";
+import { type Readable, writable } from "svelte/store";
 
 import type { Family } from "../types/family";
 import type { Person } from "./person";
@@ -21,13 +21,13 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
   const families = persist(
     writable(new Map<string, Family>()),
     createLocalStorage(true),
-    "families"
+    "families",
   );
 
   const add = (p1: Person, p2: Person) => {
     if (p1.marriageHash !== p2.marriageHash) {
       throw new Error(
-        "Couldn't create a family, because provided hashes were not identical."
+        "Couldn't create a family, because provided hashes were not identical.",
       );
     }
 
@@ -36,11 +36,11 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
     families.update((map) => {
       if (map.has(marriageHash)) {
         throw new Error(
-          `These people are already married: ${p1.getFullNameAbbr()} & ${p2.getFullNameAbbr()}`
+          `These people are already married: ${p1.getFullNameAbbr()} & ${p2.getFullNameAbbr()}`,
         );
       }
 
-      let family: Family = {
+      const family: Family = {
         hash: marriageHash,
         marriage: { between: [p1.hash, p2.hash] },
         children: new Array<string>(),
@@ -59,11 +59,11 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
   };
 
   const addChild = (person: Person) => {
-    let marriageHash = person.childOf;
+    const marriageHash = person.childOf;
 
     families.update((map) => {
       if (map.has(marriageHash)) {
-        let family = map.get(marriageHash);
+        const family = map.get(marriageHash);
 
         family.children = [person.hash, ...family.children];
       } else {
@@ -96,7 +96,7 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
 
   const removeChild = (family: string, person: Person) => {
     families.update((map) => {
-      let edited = map.get(family);
+      const edited = map.get(family);
 
       edited.children = edited.children.filter((el) => el !== person.hash);
 
@@ -110,9 +110,9 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
     removeChildren(family);
 
     families.update((map) => {
-      let edited = map.get(family);
+      const edited = map.get(family);
 
-      let [p0, _] = edited.marriage.between;
+      const [p0, _] = edited.marriage.between;
 
       let person: Person;
       people.subscribe((map) => (person = map.get(p0)))();
@@ -132,7 +132,7 @@ export const createFamilies = (): ReadableFamily<Map<string, Family>> => {
 
     families.subscribe(
       (map) =>
-        (result = map.has(data.person.marriageHash ?? data.hash ?? "nope"))
+        (result = map.has(data.person.marriageHash ?? data.hash ?? "nope")),
     )();
 
     return result;

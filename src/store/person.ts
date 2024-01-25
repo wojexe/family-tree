@@ -1,10 +1,10 @@
-import compare from "just-compare";
 import clone from "just-clone";
+import compare from "just-compare";
 
 import { nanoid } from "nanoid/non-secure";
 
-import { families, notifications, people } from "./store";
 import type { Family } from "../types/family";
+import { families, notifications, people } from "./store";
 
 export interface EditableFields {
   firstName?: string;
@@ -38,7 +38,7 @@ export class Person {
   private _marriageHash?: string;
 
   /** Limits the marriage to happen only once */
-  private _married: boolean = false;
+  private _married = false;
   public get married(): boolean {
     return this._married;
   }
@@ -124,7 +124,7 @@ export class Person {
   }
 
   public static async *create(data: PersonForm) {
-    let person = new Person(data);
+    const person = new Person(data);
 
     if (people.has({ person })) {
       throw new Error(`${person.getFullNameAbbr()} already exists.`);
@@ -139,7 +139,7 @@ export class Person {
 
       if (spouse == null) {
         throw new Error(
-          `Spouse provided with ${person.getFullNameAbbr()} does not exist!`
+          `Spouse provided with ${person.getFullNameAbbr()} does not exist!`,
         );
       }
 
@@ -153,13 +153,13 @@ export class Person {
     // Handle parents
     if (data.childOf != null) {
       let parentFamily: Family;
-      let unsubscribe = families.subscribe(
-        (families) => (parentFamily = families.get(data.childOf))
+      const unsubscribe = families.subscribe(
+        (families) => (parentFamily = families.get(data.childOf)),
       );
 
       if (parentFamily == null) {
         throw new Error(
-          `Family provided with ${person.getFullNameAbbr()} does not exist!`
+          `Family provided with ${person.getFullNameAbbr()} does not exist!`,
         );
       }
 
@@ -225,7 +225,7 @@ export class Person {
     this.marriedWith = person;
     person.marriedWith = this;
 
-    let spouse = this.marriedWith;
+    const spouse = this.marriedWith;
 
     if (this.marriageHash == null) {
       const marriageHash = nanoid(12);
@@ -253,7 +253,7 @@ export class Person {
       throw new Error(`${this.getFullNameAbbr()} not married!`);
     }
 
-    let spouse = this.marriedWith;
+    const spouse = this.marriedWith;
 
     if (spouse.marriedWith == null) {
       throw new Error(`${spouse.getFullNameAbbr()} not married!`);

@@ -1,9 +1,9 @@
-import { writable, type Readable } from "svelte/store";
 import {
-  persist,
-  createLocalStorage,
   addSerializableClass,
+  createLocalStorage,
+  persist,
 } from "@macfja/svelte-persistent-store";
+import { type Readable, writable } from "svelte/store";
 
 import { Person } from "./person";
 // @ts-ignore
@@ -25,7 +25,7 @@ export const createPeople = (): ReadablePeople<Map<string, Person>> => {
   const people = persist(
     writable(new Map<string, Person>()),
     createLocalStorage(true),
-    "people"
+    "people",
   );
 
   const add = async (data: PersonForm) => {
@@ -70,7 +70,7 @@ export const createPeople = (): ReadablePeople<Map<string, Person>> => {
     let result: boolean;
 
     people.subscribe(
-      (map) => (result = map.has(data.person.hash ?? data.hash ?? "nope"))
+      (map) => (result = map.has(data.person.hash ?? data.hash ?? "nope")),
     )();
 
     return result;
