@@ -1,7 +1,7 @@
 export enum NotificationLevel {
-  Error,
-  Info,
-  Trace,
+  Error = 0,
+  Info = 1,
+  Trace = 2,
 }
 
 export interface Notification {

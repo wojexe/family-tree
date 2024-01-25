@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.5.3",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "@testing-library/dom": "^9.3.4",
     "@testing-library/jest-dom": "^6.3.0",

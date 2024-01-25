@@ -1,7 +1,7 @@
-/// <reference types="vitest" />
-import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import basicSsl from "@vitejs/plugin-basic-ssl";
+/// <reference types="vitest" />
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
     includeSource: ["src/**/*.{js,ts,svelte}"],
     setupFiles: ["./setupTest.ts"],
     coverage: {
-      exclude: ['setupTest.ts']
+      exclude: ["setupTest.ts"],
     },
   },
   define: {
