@@ -13,6 +13,10 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     includeSource: ["src/**/*.{js,ts,svelte}"],
+    setupFiles: ["./setupTest.ts"],
+    coverage: {
+      exclude: ['setupTest.ts']
+    },
   },
   define: {
     "import.meta.vitest": "undefined",
