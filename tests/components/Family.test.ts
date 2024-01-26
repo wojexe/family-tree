@@ -8,8 +8,8 @@ import {
 } from "@testing-library/svelte";
 import { nanoid } from "nanoid/non-secure";
 import FamilyComponent from "./../../src/components/Family.svelte";
+import { people, families } from "./../../src/store/store";
 import type { Person } from "./../../src/store/person";
-import { families, people } from "./../../src/store/store";
 
 function generateFakePersonData(
   marriedWith: string | null = null,
