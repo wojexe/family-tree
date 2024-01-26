@@ -7,19 +7,6 @@ import {faker} from "@faker-js/faker";
 import {Person} from "../../src/store/person";
 
 
-vi.mock('svelte/store', async (importOriginal) => {
-    const actual = await importOriginal() as any;
-
-    const writable = actual.writable as Writable<unknown>;
-
-    // HACK: all writable stores are maps currently
-    writable.delete = () => {
-        writable.set(new Map())
-    }
-
-    return {...actual, writable}
-})
-
 test("store_resetStore", async () => {
     const peopleStore = createPeople();
     const familiesStore = createFamilies();
@@ -49,8 +36,8 @@ test("store_resetStore", async () => {
     });
     assert.isTrue(peopleStoreSize === 0, "People store size should be 0");
 
-    await peopleStore.add(person1);
-    await peopleStore.add(person2);
+    await peopleStore.add(person1Data);
+    await peopleStore.add(person2Data);
     peopleStore.subscribe((map) => {
         peopleStoreSize = map.size
     });

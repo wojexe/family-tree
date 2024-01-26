@@ -1,18 +1,5 @@
-import {fa, faker} from "@faker-js/faker";
+import { faker} from "@faker-js/faker";
 
-
-vi.mock('svelte/store', async (importOriginal) => {
-    const actual = await importOriginal() as any;
-
-    const writable = actual.writable as Writable<unknown>;
-
-    // HACK: all writable stores are maps currently
-    writable.delete = () => {
-        writable.set(new Map())
-    }
-
-    return {...actual, writable}
-})
 
 import {Person} from "../../src/store/person";
 import {createFamilies} from "../../src/store/families";

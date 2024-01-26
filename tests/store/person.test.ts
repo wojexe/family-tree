@@ -103,7 +103,7 @@ test("person_familyName", async () => {
     const personData = {
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        familyName: faker.name.lastName(),
+        familyName: faker.person.lastName(),
         dateOfBirth: {custom: false, date: faker.date.birthdate().toISOString()},
     }
 
@@ -113,7 +113,7 @@ test("person_familyName", async () => {
 
     assert.equal(person.familyName, personData.familyName, "Family names are not equal");
 
-    const changedFamilyName = faker.name.lastName();
+    const changedFamilyName = faker.person.lastName();
     person.familyName = changedFamilyName;
     assert.equal(person.familyName, changedFamilyName, "Family names are not equal");
 })
@@ -282,7 +282,7 @@ test("person_getFullNameAbbr", async () => {
         firstName: faker.person.firstName(),
         additionalName: faker.person.middleName(),
         lastName: faker.person.lastName(),
-        familyName: faker.name.lastName(),
+        familyName: faker.person.lastName(),
         dateOfBirth: {custom: false, date: faker.date.birthdate().toISOString()},
     }
 
@@ -302,7 +302,7 @@ test("person_getFullName", async () => {
         firstName: faker.person.firstName(),
         additionalName: faker.person.middleName(),
         lastName: faker.person.lastName(),
-        familyName: faker.name.lastName(),
+        familyName: faker.person.lastName(),
         dateOfBirth: {custom: false, date: faker.date.birthdate().toISOString()},
     }
 

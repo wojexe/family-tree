@@ -3,19 +3,6 @@ import {createNotifications} from "../../src/store/notifications";
 import {type Notification, NotificationLevel} from "../../src/types/notification";
 
 
-vi.mock('svelte/store', async (importOriginal) => {
-    const actual = await importOriginal() as any;
-
-    const writable = actual.writable as Writable<unknown>;
-
-    // HACK: all writable stores are maps currently
-    writable.delete = () => {
-        writable.set(new Map())
-    }
-
-    return {...actual, writable}
-})
-
 test("notifications_sendNotification", async () => {
     const notificationsStore = createNotifications();
 
