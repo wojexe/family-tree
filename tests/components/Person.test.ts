@@ -180,8 +180,12 @@ describe("Person", async () => {
 
     const { container } = await renderPerson(person);
 
-    const personElement = container.querySelector(`#${person.hash}`)!;
-    await fireEvent.click(personElement);
+    const personElement = container.querySelector(`#${person.hash}`);
+
+    expect(personElement).toBeInTheDocument();
+
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    await fireEvent.click(personElement!);
 
     expect(bindSpy.mock.calls.length).toBe(1);
   });
