@@ -50,7 +50,11 @@ Na podstawie aktualnej struktury projektu, zostaną przetestowane komponenty zna
 ## Plan testowania manualnego
 
 Testowanie manualne ograniczy się do przejścia przez flow aplikacji, w celu sprawdzenia czy wszystkie funkcjonalności działają poprawnie.
-TODO: dodać ze dwa-trzy przebiegi przeklikania
+
+1. Dodać kilka osób: osoba1, osoba2 jako partner osoba1, osoba3 jako dziecko pary o1o2, osoba4 jako dziecko pary o1o2
+2. Kliknąć na osobę 1 - powinien wyświetlić się modal
+3. Kliknąć przycisk "Delete"
+4. Sprawdzić, czy korzeń drzewa zostanie usunięty i jesteśmy w stanie stowrzyć nowe drzewo, analogicznie jak w pkt. 1
 
 ## Plan testowania automatycznego
 
