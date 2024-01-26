@@ -2,18 +2,6 @@ import {Person} from "../../src/store/person";
 import {faker} from '@faker-js/faker';
 import {createFamilies} from "../../src/store/families";
 
-vi.mock("@macfja/svelte-persistent-store", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-
-    return {
-        ...actual,
-        addSerializableClass: (_: any) => {
-        },
-        createLocalStorage: (_: any) => {
-        },
-        persist: (store: any, _storage: any, _key: any) => store,
-    }
-})
 
 test("person_create", async () => {
     const personData = {

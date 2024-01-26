@@ -2,18 +2,6 @@ import type {Writable} from "svelte/store";
 import {createNotifications} from "../../src/store/notifications";
 import {type Notification, NotificationLevel} from "../../src/types/notification";
 
-vi.mock("@macfja/svelte-persistent-store", async (importOriginal) => {
-    const actual = await importOriginal() as any;
-
-    return {
-        ...actual,
-        addSerializableClass: (_: any) => {
-        },
-        createLocalStorage: (_: any) => {
-        },
-        persist: (store: any, _storage: any, _key: any) => store,
-    }
-})
 
 vi.mock('svelte/store', async (importOriginal) => {
     const actual = await importOriginal() as any;
