@@ -14,6 +14,17 @@ import { getDateFormatter } from "svelte-i18n";
 
 const dateFormatter = getDateFormatter();
 
+vi.mock("svelte-simple-modal", async (importOriginal) => {
+  const original = (await importOriginal()) as any;
+
+  return {
+    ...original,
+    bind: vi.fn().mockImplementation(original.bind),
+  };
+});
+
+import * as SSM from "svelte-simple-modal";
+
 describe("Person", async () => {
   let personData: PersonForm = {
     firstName: faker.person.firstName(),
@@ -160,5 +171,18 @@ describe("Person", async () => {
     expect(container.textContent).toContain(familyName);
     expect(container.textContent).toContain(dateFormatter.format(birthDate));
     expect(container.textContent).toContain(dateFormatter.format(deathDate));
+  });
+
+  it("opens a modal when clicked", async () => {
+    const bindSpy = vi.spyOn(SSM, "bind") as any;
+
+    const person = await createPerson();
+
+    const { container } = await renderPerson(person);
+
+    const personElement = container.querySelector(`#${person.hash}`)!;
+    await fireEvent.click(personElement);
+
+    expect(bindSpy.mock.calls.length).toBe(1);
   });
 });
