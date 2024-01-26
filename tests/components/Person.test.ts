@@ -161,7 +161,7 @@ describe("Person", async () => {
       additionalName,
       familyName,
       dateOfBirth: { date: birthDate, custom: false },
-      dateOfDeath: { date: deathDate, custom: false },
+      dateOfDeath: { date: deathDate, custom: true },
     };
 
     const { container } = await renderPerson();
@@ -170,7 +170,7 @@ describe("Person", async () => {
     expect(container.textContent).toContain(additionalName);
     expect(container.textContent).toContain(familyName);
     expect(container.textContent).toContain(dateFormatter.format(birthDate));
-    expect(container.textContent).toContain(dateFormatter.format(deathDate));
+    expect(container.textContent).toContain(deathDate);
   });
 
   it("opens a modal when clicked", async () => {
